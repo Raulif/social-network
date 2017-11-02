@@ -5,9 +5,9 @@ const bodyParser = require('body-parser')
 const spicedPg = require('spiced-pg');
 const cookieSession = require('cookie-session')
 const db = spicedPg(process.env.DATABASE_URL || 'postgres:rauliglesias:Fourcade1@localhost:5432/socialnetwork');
-const bcrypt = require('bcryptjs');
 const session = require('express-session')
 const csurf = require('csurf')
+const { hashPassword, checkPassword } = require('./hasher')
 
 
 app.use(compression());
@@ -23,34 +23,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 // app.use(csurf())
 //
-// var hashPassword = function(plainTextPassword) {
-//     return new Promise(function(resolve, reject) {
-//         bcrypt.genSalt(function(err, salt) {
-//             if (err) {
-//                 return reject(err);
-//             }
-//             bcrypt.hash(plainTextPassword, salt, function(err, hash) {
-//                 if (err) {
-//                     return reject(err);
-//                 }
-//                 resolve(hash);
-//             });
-//         });
-//     });
-// }
-//
-// var checkPassword = function(textEnteredInLoginForm, hashedPasswordFromDatabase) {
-//     return new Promise(function(resolve, reject) {
-//         bcrypt.compare(textEnteredInLoginForm, hashedPasswordFromDatabase, function(err, doesMatch) {
-//             if (err) {
-//                 reject(err);
-//             } else {
-//                 resolve(doesMatch);
-//             }
-//         });
-//     });
-// }
-//
+
 console.log('in index');
 
 if (process.env.NODE_ENV != 'production') {
@@ -61,7 +34,7 @@ if (process.env.NODE_ENV != 'production') {
 
 app.get('/', function(req, res){
     if(!req.session.user) {
-        res.send('/welcome')
+        res.redirect('/welcome')
     } else {
         res.sendFile(__dirname + '/index.html');
 
@@ -83,25 +56,28 @@ app.post('/newuser', (req, res) => {
         console.log('missing fields');
         res.json({success: false})
     } else {
-        var firstName = req.body.firstname;
-        var lastName = req.body.lastname;
-        var email = req.body.email;
-        var password = req.body.password;
+        let firstName = req.body.firstname;
+        let lastName = req.body.lastname;
+        let email = req.body.email;
 
         console.log(req.body);
 
-        req.session.user = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password
-        }
+        hashPassword(req.body.password).then((hash) => {
+            let password = hash;
+            req.session.user = {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: hash
+            }
+            console.log(req.session.user.password);
+            const qRegisterUser = `INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id`
+            const params = [firstName, lastName, email, password]
+            db.query(qRegisterUser, params).then(() => {
+                res.json({success: true})
+            }).catch(err => console.log("THERE WAS AN ERROR IN /postquery newuser",err));
+        })
 
-        const qRegisterUser = `INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id`
-        const params = [firstName, lastName, email, password]
-        db.query(qRegisterUser, params).then(() => {
-            res.json({success: true})
-        }).catch(err => console.log("THERE WAS AN ERROR IN /postquery newuser",err));
     }
 })
 
@@ -112,24 +88,29 @@ app.post('/attemptlogin', (req, res) => {
     }
     else {
         var email = req.body.email;
-        var password = req.body.password;
+        var plainPassword = req.body.password;
+
         const qUserLogin = `SELECT * FROM users WHERE email = $1`
-        const params = [email, password]
+        const params = [email]
+
         db.query(qUserLogin, params).then((results) => {
             if(results.rowCount < 1) {
                 console.log('wrong login data');
                 res.json({success: false})
             } else {
-                let loginData = results.rows[0]
-                req.session.user = {
-                    id: loginData.user_id,
-                    firstName: loginData.firstname,
-                    lastName: loginData.lastname,
-                    email: loginData.email
-                }
-                res.json({
-                    success: true,
-                    user: req.session.user
+                const userData = results.rows[0]
+                const hashedPasswordFromDatabase = userData.password
+                checkPassword(plainPassword, hashedPasswordFromDatabase).then((doesMatch) => {
+                    req.session.user = {
+                        id: loginData.user_id,
+                        firstName: loginData.firstname,
+                        lastName: loginData.lastname,
+                        email: loginData.email
+                    }
+                    res.json({
+                        success: true,
+                        user: req.session.user
+                    })
                 })
             }
         })
