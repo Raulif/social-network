@@ -7,7 +7,7 @@ const cookieSession = require('cookie-session')
 const db = spicedPg(process.env.DATABASE_URL || 'postgres:rauliglesias:Fourcade1@localhost:5432/socialnetwork');
 const session = require('express-session')
 const csurf = require('csurf')
-const { hashPassword, checkPassword } = require('./hasher')
+const { hashPassword, checkPassword } = require('./src/hasher')
 
 
 app.use(compression());
@@ -42,7 +42,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/welcome', function(req, res){
-    if (!!req.session.user) {
+    if (req.session.user) {
         res.redirect('/')
     }
     else {
@@ -59,8 +59,6 @@ app.post('/newuser', (req, res) => {
         let firstName = req.body.firstname;
         let lastName = req.body.lastname;
         let email = req.body.email;
-
-        console.log(req.body);
 
         hashPassword(req.body.password).then((hash) => {
             let password = hash;
@@ -100,24 +98,28 @@ app.post('/attemptlogin', (req, res) => {
             } else {
                 const userData = results.rows[0]
                 const hashedPasswordFromDatabase = userData.password
-                checkPassword(plainPassword, hashedPasswordFromDatabase).then((doesMatch) => {
+                checkPassword(plainPassword, hashedPasswordFromDatabase).then(() => {
                     req.session.user = {
-                        id: loginData.user_id,
-                        firstName: loginData.firstname,
-                        lastName: loginData.lastname,
-                        email: loginData.email
+                        id: userData.user_id,
+                        firstName: userData.firstname,
+                        lastName: userData.lastname,
+                        email: userData.email
                     }
                     res.json({
                         success: true,
-                        user: req.session.user
                     })
-                })
+                }).catch(err => console.log("THERE WAS AN ERROR IN /attemptlogin newuser",err));
             }
         })
     }
-
 })
 
+app.get('/user', (req, res) => {
+    res.json({
+        success: true,
+        user: req.session.user
+    })
+})
 
 app.listen(8080, function() {
     console.log("I'm listening.")

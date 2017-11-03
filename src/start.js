@@ -1,32 +1,43 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, Link, IndexRoute, hashHistory } from 'react-router';
-import { Welcome, Register, Login } from './welcome';
-import { Logo } from './logo';
+import { Router, Route, IndexRoute, hashHistory } from 'react-router';
+import Welcome from './welcome';
+import Register from './register';
+import Logo from './logo';
+import Login from './login';
+// import { App } from './app'
 
-const isLoggedIn = location.pathname != '/welcome'
 
-let component = <Welcome />
 
-if (isLoggedIn) {
-    component = <Logo />
-}
+const notLoggedInRouter = (
+    <Router history={hashHistory}>
+        <Route path="/" component={Welcome}>
+            <Route path="/login" component={Login} />
+            <IndexRoute component={Register} />
+  	    </Route>
+    </Router>
+);
+
+const loggedInRouter = (
+    <Router history={hashHistory}>
+        <Route path="/user" component={App}>
+            <IndexRoute component={Logo} />
+            <IndexRoute component={ProfilePicture}/>
+        </Route>
+    </Router>
+)
+
+// (
+//     <Router history={hashHistory}>
+//         <Route path="/user" component={App}>
+//             <IndexRoute component={Logo} />
+//         </Route>
+//     </Router>
+// )
+
+let router = location.pathname === '/welcome' ? notLoggedInRouter : loggedInRouter;
 
 ReactDOM.render(
-    component,
+    router,
     document.querySelector('main')
 );
-//
-// const router = (
-//     <Router history={hashHistory}>
-//         <Route path="/" component={Welcome}>
-//             <Route path="/login" component={Login} />
-//             <IndexRoute component={Register} />
-//   	    </Route>
-//     </Router>
-// );
-//
-// ReactDOM.render(
-//     router,
-//     document.querySelector('main')
-// );

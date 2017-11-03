@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#welcome-container {
+    width: 100vw;
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+#welcome-container #logo {
+    width: 90%;
+    margin-top: 50px;
+    margin-bottom: 100px;
+}
