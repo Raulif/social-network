@@ -2,9 +2,10 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color: rgba(1, 143, 165, 0.1)
 }
 
-#welcome-container {
+#welcome-top-container {
     width: 100vw;
     height: 45vh;
     display: flex;
@@ -15,10 +16,58 @@ body {
     margin: 0;
     padding: 0;
     margin-bottom: 0;
+    background-color: white;
 }
 
-#welcome-container #logo {
+#welcome-top-container #logo {
     width: 90%;
     margin-top: 50px;
     margin-bottom: 100px;
+}
+
+
+#welcome-bottom-container {
+    width: 100%;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1899AD;
+    margin: 0;
+    align-items: center;
+}
+
+.link {
+    font-size: 40px;
+}
+
+#topBar {
+    top: 0;
+    width: 100%;
+    height: 110px;
+    border-bottom: 1px solid #1899AD;
+    text-align: center;
+    box-shadow: 0px 2px 4px #a51e72;
+    position: fixed;
+    background-image: url('logo-boheme.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: white;
+}
+
+#topBar #logo {
+    height: 100px;
+    display: inline-block;
+}
+
+
+#topBar #profile-picture {
+    height: 95px;
+    width: auto;
+    float: right;
+    top: 7px;
+    position: absolute;
+    right: 5px;
+    border: 1px solid #a51e72;
+    border-radius: 8px;
+
 }

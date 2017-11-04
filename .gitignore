@@ -4,3 +4,4 @@ bundle.js
 package-lock.json
 palette.scss
 palette img.png
+secrets.json

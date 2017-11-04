@@ -5,7 +5,7 @@ import Welcome from './welcome';
 import Register from './register';
 import Logo from './logo';
 import Login from './login';
-// import { App } from './app'
+import App from './app'
 
 
 
@@ -18,22 +18,7 @@ const notLoggedInRouter = (
     </Router>
 );
 
-const loggedInRouter = (
-    <Router history={hashHistory}>
-        <Route path="/user" component={App}>
-            <IndexRoute component={Logo} />
-            <IndexRoute component={ProfilePicture}/>
-        </Route>
-    </Router>
-)
-
-// (
-//     <Router history={hashHistory}>
-//         <Route path="/user" component={App}>
-//             <IndexRoute component={Logo} />
-//         </Route>
-//     </Router>
-// )
+const loggedInRouter = <App/>
 
 let router = location.pathname === '/welcome' ? notLoggedInRouter : loggedInRouter;
 

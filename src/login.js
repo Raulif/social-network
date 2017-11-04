@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router';
+import { Input, Button } from './reusables'
 
 export default class Login extends React.Component {
     constructor(props){
@@ -20,7 +21,7 @@ export default class Login extends React.Component {
 
         }).then((resp) => {
             if (resp.data.success) {
-                location.replace('/')
+                location.replace('/#/user')
                 // location.replace(`/user/${resp.data.user.firstname}`)
             } else {
                 this.setState({
@@ -34,12 +35,12 @@ export default class Login extends React.Component {
         console.log('in login');
 
         return (
-            <div>
+            <div >
                 {this.state.error && <div>Error trying to login</div>}
-                <input type="text" name="email" onChange={e => this.inputHandler(e)} placeholder="email"/>
-                <input type="password" name="password" onChange={e => this.inputHandler(e)} placeholder="password"/>
-                <button onClick={ () => this.submit() }>Login!</button>
-                <p>Not yet a member? <Link to="/">Register</Link></p>
+                <Input type="text" name="email" onChange={e => this.inputHandler(e)} placeholder="email"/>
+                <Input type="password" name="password" onChange={e => this.inputHandler(e)} placeholder="password"/>
+                <Button onClick={ () => this.submit() }>Login!</Button>
+                <p>Not yet a member? <Link className="link" to="/">Register</Link></p>
             </div>
         )
     }

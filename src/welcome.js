@@ -34,14 +34,15 @@ export default class Welcome extends React.Component {
 
         return (
             <div>
-                <div id="welcome-container">
+                <div id="welcome-top-container">
                     <Logo />
                     <h1>The social network for bohemian artists like you</h1>
 
                     <h2>Join Bohême now!</h2>
                 </div>
-
-                {this.props.children}
+                <div id="welcome-bottom-container">
+                    {this.props.children}
+                </div>
 
             </div>
         )

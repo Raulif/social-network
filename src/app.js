@@ -1,51 +1,39 @@
 import React from 'react';
-// import styled from 'styled-components';
 import axios from 'axios';
+import ProfilePicture from './profile-picture';
 
 export default class App extends React.Component {
     constructor(props) {
-        super(props)
+        super(props),
         this.state = {}
     }
-
     componentDidMount() {
-        axios.get('/user',  => {
+        console.log('in App, about to query db for userdata');
+        axios.get('/getUser')
+        .then((queryResponse) => {
+            let user = queryResponse.data.user;
+            this.setState({
+                userId: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email
 
-        }).then(({userInfo}) => {
-            this.setState(userInfo)
-        }).catch((err)=>{console.log(err)})
+            })
+        }).catch(err => console.log("THERE WAS AN ERROR IN /app",err));
     }
-
-
 
     render() {
-        <div>
-            <Logo />
-            <ProfilePic onClick={() => this.setState({imageUploadVisible: true})}/>
-            {this.state.imageUploadVisible && <ImageUpload/>}
-        </div>
-    }
-}
-
-function ProfilePic(props) {
-    if(!props.id) {
-        return null
-    }
-
-    const showUploader = () {
-
-    }
-
-    else {
-
         return (
-            <div id="app">
-                <Logo/>
-                <img onClick={props.showUploader}
-                    src={props.image}
-                    alt={`${props.firs}${props.last}`}/>
+            <div>
+                <div id="topBar">
+                    <ProfilePicture userId={this.state.userId} alt={`${this.state.firstName}-${this.state.lastName}`} />
+                </div>
             </div>
         )
-
     }
 }
+//
+// <div>
+//     <label htmlFor="file">Upload Picture</label>
+//     <input type="file" id="file"/>
+// </div>
