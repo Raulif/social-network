@@ -194,6 +194,45 @@ app.post('/uploadPicture', uploader.single('file'), (req, res) => {
     }
 })
 
+app.post('/updateUserBio', (req, res) => {
+    console.log('this is req.body on update user bio query: ', req.body);
+    const qInsertUserBio = `UPDATE users SET bio = $1 WHERE id = $2`;
+    const params = [req.body.bio, req.session.user.id]
+    db.query(qInsertUserBio, params)
+    .then((results) => {
+        req.session.user.bio = req.body.bio
+        console.log(req.session.user.bio);
+        res.json({
+            success: true
+        })
+    }).catch(err => res.json({success: false}));
+})
+
+app.get('/getUserBio', (req, res) => {
+    console.log('getting user bio from server');
+    if(req.session.user.bio) {
+        res.json({
+            success: true,
+            bio: req.session.user.bio
+        })
+    } else {
+        const qGetUserBio = `SELECT bio FROM users WHERE id = $1`;
+        const params = [req.session.user.id]
+        db.query(qGetUserBio, params)
+        .then((results) => {
+            if(results.rowCount < 1) {
+                console.log('user has no bio');
+                res.json({success: false})
+            } else {
+                res.json({
+                    success: true,
+                    bio: results.rows[0].bio
+                })
+            }
+        })
+    }
+})
+
 app.get('/getUser', (req, res) => {
     console.log('getting user info from server');
     res.send({

@@ -22,8 +22,8 @@ export const Button = styled.button`
     width: 30%;
     border: none;
     border-bottom: 5px solid #e683af;
-    border-radius: 3px;
+    border-radius: 9px;
     background-color: #a51e72;
     color: white;
-    font-size: 30px;
+    font-size: 40px;
 `

@@ -15,6 +15,9 @@ export default class Login extends React.Component {
     }
 
     submit() {
+        if(!this.email || !this.password) {
+            this.setState({error: true})
+        }
         axios.post('/attemptlogin', {
             email: this.email,
             password: this.password
@@ -35,8 +38,8 @@ export default class Login extends React.Component {
         console.log('in login');
 
         return (
-            <div >
-                {this.state.error && <div>Error trying to login</div>}
+            <div className="welcome-bottom-container">
+                {this.state.error && <div className="warning">Error trying to login</div>}
                 <Input type="text" name="email" onChange={e => this.inputHandler(e)} placeholder="email"/>
                 <Input type="password" name="password" onChange={e => this.inputHandler(e)} placeholder="password"/>
                 <Button onClick={ () => this.submit() }>Login!</Button>

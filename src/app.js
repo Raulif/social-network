@@ -23,11 +23,21 @@ export default class App extends React.Component {
     }
 
     render() {
+        const clonedChildren = React.cloneElement(
+            this.props.children,
+            {
+                userId: this.state.userId,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName
+            }
+        )
         return (
             <div>
                 <div id="topBar">
                     <ProfilePicture userId={this.state.userId} alt={`${this.state.firstName}-${this.state.lastName}`} />
                 </div>
+                {clonedChildren}
+
             </div>
         )
     }

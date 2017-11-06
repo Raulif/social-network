@@ -10,15 +10,13 @@ export default class PictureUpload extends React.Component {
 
     inputHandler(e) {
         console.log(e.target.files[0]);
-
         this.setState({ pictureFile: e.target.files[0]})
     }
 
     submit() {
-
         var formData = new FormData();
-        console.log(this.state);
         formData.append('file', this.state.pictureFile);
+        console.log(formData);
         axios.post('/uploadPicture', formData )
         .then(({data}) => {
             if(data.success) {

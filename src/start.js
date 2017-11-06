@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute, hashHistory } from 'react-router';
+import { Router, Route, IndexRoute, hashHistory, browserHistory } from 'react-router';
 import Welcome from './welcome';
 import Register from './register';
-import Logo from './logo';
 import Login from './login';
-import App from './app'
+import App from './app';
+import Profile from './profile'
 
 
 
@@ -18,7 +18,13 @@ const notLoggedInRouter = (
     </Router>
 );
 
-const loggedInRouter = <App/>
+const loggedInRouter = (
+    <Router history={browserHistory}>
+        <Route path="/" component={App}>
+            <IndexRoute component={Profile} />
+        </Route>
+    </Router>
+);
 
 let router = location.pathname === '/welcome' ? notLoggedInRouter : loggedInRouter;
 
