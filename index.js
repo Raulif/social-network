@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const spicedPg = require('spiced-pg');
 const cookieSession = require('cookie-session')
 const db = spicedPg(process.env.DATABASE_URL || 'postgres:rauliglesias:Fourcade1@localhost:5432/socialnetwork');
+const {getNextAction, getNextStatus} = require('./src/friendship-helper')
 const session = require('express-session')
 const csurf = require('csurf')
 const { hashPassword, checkPassword } = require('./src/hasher')
@@ -54,6 +55,11 @@ if (process.env.NODE_ENV != 'production') {
     }));
 }
 
+// const PENDING = 1
+//     , ACCEPTED = 2
+//     , REJECTED = 3
+//     , CANCELLED = 4
+//     , TERMINATED = 5;
 
 app.get('/get-user/:id', (req, res) => {
     const otherUserId = [req.params.id];
@@ -67,6 +73,99 @@ app.get('/get-user/:id', (req, res) => {
     })
 })
 
+app.get('/get-current-friendship/:id', (req, res) => {
+
+    let otherUserId = req.params.id
+
+    const qGetCurrentFriendship = `SELECT * FROM friendships WHERE sender_id = $1 AND recipient_id = $2 OR sender_id = $2 AND recipient_id = $1`
+    const params = [req.session.user.id, otherUserId]
+    db.query(qGetCurrentFriendship, params)
+    .then((results) => {
+
+        console.log(results.rows[results.rows.length-1]);
+        let currentFriendship = results.rows[results.rows.length-1];
+
+        req.session.friendship = {
+            id: currentFriendship.id,
+            status: currentFriendship.status
+        }
+        console.log(req.session.friendship)
+        if(req.session.user.id === currentFriendship.sender_id) {
+            req.session.user.isSender = true
+        }
+        else {
+            req.session.user.isSender = false
+        }
+
+        console.log('isSender: ', req.session.user.isSender, 'friendship status: ', req.session.friendship.status);
+
+        let userIsSender = req.session.user.isSender
+        let currentStatus = req.session.friendship.status;
+
+        req.session.friendship.nextAction = getNextAction(userIsSender, currentStatus)
+        console.log(req.session.friendship.nextAction);
+        res.json({
+            success: true,
+            nextAction: req.session.friendship.nextAction
+        })
+    }).catch(err => console.log("THERE WAS AN ERROR IN /get friendship",err));
+})
+
+app.post('/update-friendship/:id/', (req, res) => {
+    let otherUser = req.params.id;
+    let nextAction = req.session.friendship.nextAction
+    let nextStatus = getNextStatus(nextAction)
+
+    if(nextAction = 'Request Friendship') {
+
+        const qNewFriendship = `INSERT INTO friendships (sender_id, recipient_id, status) VALUES ($1, $2, $3) RETURNING id`
+
+        const params = [req.session.user.id, otherUser, nextStatus]
+
+        db.query(qNewFriendship, params)
+        .then((results) => {
+            let queryResults = results.rows[0]
+            req.session.friendship.id = queryResults.id
+            req.session.friendship.status = nextStatus
+            nextAction = getNextAction(true, req.session.friendship.status)
+            res.json({
+                success: true,
+                nextAction: nextAction
+            })
+        })
+
+    } else {
+
+        const qUpdateFriendship = `UPDATE friendships SET status = $1 WHERE id = $2`
+
+        const params = [nextStatus, req.session.friendship.id]
+
+        db.query(qUpdateFriendship, params)
+        .then((results) => {
+            req.session.friendship.status = nextStatus
+            nextAction = getNextAction(true, currentStatus)
+            let queryResults = results.rows[0]
+            res.json({
+                success: true,
+                nextAction: nextAction
+            })
+        })
+    }
+})
+
+app.post('/reject-friendship-request/:id', (req, res) => {
+    const qRejectFriendshipRequest = `UPDATE friendships SET status = $1 WHERE id = $2`
+
+    const params = ['rejected', req.session.friendship.id]
+
+    db.query(qRejectFriendshipRequest, params)
+    .then((results) => {
+        let queryResults = results.rows[0]
+        res.json({
+            success: true
+        })
+    })
+})
 
 app.get('/welcome', function(req, res){
     if (req.session.user) {

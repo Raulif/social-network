@@ -5,7 +5,6 @@ import EditableBio from './editable-bio';
 export default class Profile extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
     }
 
     render(props) {

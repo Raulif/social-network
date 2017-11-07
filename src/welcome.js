@@ -12,7 +12,7 @@ export default class Welcome extends React.Component {
             <div>
                 <div id="welcome-top-container">
                     <Logo />
-                    <h1>The social network for bohemian artists like you</h1>
+                    <h1>The social network for tue bohemians</h1>
 
                     <h2>Join Bohême now!</h2>
                 </div>
