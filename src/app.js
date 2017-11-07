@@ -8,7 +8,6 @@ export default class App extends React.Component {
         this.state = {}
     }
     componentDidMount() {
-        console.log('in App, about to query db for userdata');
         axios.get('/getUser')
         .then((queryResponse) => {
             let user = queryResponse.data.user;

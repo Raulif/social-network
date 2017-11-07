@@ -20,13 +20,10 @@ export default class PictureUpload extends React.Component {
         axios.post('/uploadPicture', formData )
         .then(({data}) => {
             if(data.success) {
-                this.setState({
-                    pictureUploadVisible: false
-                })
                 this.props.updateImage(data.pictureName)
             }
         })
-        .catch(err => console.log("THERE WAS AN ERROR IN /newuser",err));
+        .catch(err => console.log("THERE WAS AN ERROR IN /newuser", err));
     }
 
     componentDidMount() {

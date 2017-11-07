@@ -44,7 +44,7 @@ export default class EditableBio extends React.Component {
             <div id="bio-container" >
                 {this.state.bio &&
                     <div className="label" for="bio-editor">
-                        Bio:
+                        About me:
                     </div>
                 }
 

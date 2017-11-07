@@ -47,7 +47,6 @@ app.use(bodyParser.json())
 // app.use(csurf())
 //
 
-console.log('in index');
 
 if (process.env.NODE_ENV != 'production') {
     app.use('/bundle.js', require('http-proxy-middleware')({
@@ -55,27 +54,18 @@ if (process.env.NODE_ENV != 'production') {
     }));
 }
 
-// app.post('/uploadpicture', uploader.single('imageFile'), function(req, res) {
-//     // If nothing went wrong the file is already in the uploads directory
-//
-//     if(req.file) {
-//         toS3(req.file)
-//         .then(function(){
-//             //only after this, do the insert query to DB
-//             const qInsertImage = `INSERT INTO images (image, username, title, description) VALUES ($1, $2, $3, $4)`
-//
-//             const params = [req.file.filename, req.body.username, req.body.imgtitle, req.body.imgdescription]
-//
-//             return db.query(qInsertImage, params).then((results)=> {
-//
-//                 res.json({success: true})
-//             })
-//         })
-//         .catch(err => res.json({success: false}));
-//     } else {
-//         res.json({success: false})
-//     }
-// });
+
+app.get('/get-user/:id', (req, res) => {
+    const otherUserId = [req.params.id];
+    const qGetOtherUserInfo = `SELECT * FROM users WHERE id = $1`;
+    db.query(qGetOtherUserInfo, otherUserId)
+    .then((results) => {
+        res.json({
+            success: true,
+            otherUser: results.rows[0]
+        })
+    })
+})
 
 
 app.get('/welcome', function(req, res){
@@ -105,14 +95,14 @@ app.post('/newuser', (req, res) => {
                 email: email,
                 password: hash
             }
-            console.log(req.session.user.password);
             const qRegisterUser = `INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id`
             const params = [firstName, lastName, email, password]
             db.query(qRegisterUser, params).then(() => {
-                res.json({success: true})
+                res.json({
+                    success: true
+                })
             }).catch(err => console.log("THERE WAS AN ERROR IN /postquery newuser",err));
         })
-
     }
 })
 
@@ -240,6 +230,8 @@ app.get('/getUser', (req, res) => {
         user: req.session.user
     })
 })
+
+
 
 app.get('*', function(req, res){
     if(!req.session.user) {

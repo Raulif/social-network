@@ -9,7 +9,6 @@ export default class ProfilePicture extends React.Component {
         this.state = {pictureUploadVisible: false}
     }
     componentDidMount() {
-        console.log('About to do first picture query');
         axios.get('/getProfilePicture')
         .then((queryResponse) => {
             let pictureName = queryResponse.data.pictureName;
@@ -28,7 +27,6 @@ export default class ProfilePicture extends React.Component {
     }
 
     render() {
-        console.log('reached profile-picture');
         if(!this.state.pictureName) {
             return (
                 <div>
@@ -45,7 +43,7 @@ export default class ProfilePicture extends React.Component {
                     onClick={() => this.setState({pictureUploadVisible: true})}/>
 
                     {this.state.pictureUploadVisible && <PictureUpload
-                    updateImage = {newPictureName => this.setState({pictureName: newPictureName})}
+                    updateImage = {newPictureName => this.setState({pictureName: newPictureName, pictureUploadVisible: false})}
                     onChange={()=> this.changeHandler()} />}
                 </div>
             )

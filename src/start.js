@@ -5,7 +5,8 @@ import Welcome from './welcome';
 import Register from './register';
 import Login from './login';
 import App from './app';
-import Profile from './profile'
+import Profile from './profile';
+import OtherUserProfile from './other-user-profile'
 
 
 
@@ -22,7 +23,9 @@ const loggedInRouter = (
     <Router history={browserHistory}>
         <Route path="/" component={App}>
             <IndexRoute component={Profile} />
+            <Route path="/user/:id" component={OtherUserProfile}/>
         </Route>
+
     </Router>
 );
 
