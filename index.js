@@ -77,57 +77,96 @@ app.get('/get-current-friendship/:id', (req, res) => {
 
     let otherUserId = req.params.id
 
+    console.log('ENTERING GET CURRENT FRIENDSHIP QUERY');
+
+    //the query qGetCurrentFriendship gets the information on the friendship table which matches either the logged-in user or the other user
+
     const qGetCurrentFriendship = `SELECT * FROM friendships WHERE sender_id = $1 AND recipient_id = $2 OR sender_id = $2 AND recipient_id = $1`
+
     const params = [req.session.user.id, otherUserId]
     db.query(qGetCurrentFriendship, params)
     .then((results) => {
 
-        console.log(results.rows[results.rows.length-1]);
+        //we select the last row, which is the last row created in the table and is the current state of the friendship
+
         let currentFriendship = results.rows[results.rows.length-1];
 
         req.session.friendship = {
             id: currentFriendship.id,
-            status: currentFriendship.status
+            status: currentFriendship.status,
+            senderId: currentFriendship.sender_id
         }
-        console.log(req.session.friendship)
-        if(req.session.user.id === currentFriendship.sender_id) {
-            req.session.user.isSender = true
+
+        //we identify if the logged-in user is the sender of the last friendship action triggered by the button. This is important in case the logged-in user sent a new friendship request, in which case the next action possible will be to cancel the request.
+
+        let userIsSender
+
+        if(req.session.user.id === req.session.friendship.senderId) {
+            userIsSender = true
         }
         else {
-            req.session.user.isSender = false
+            userIsSender = false
         }
 
-        console.log('isSender: ', req.session.user.isSender, 'friendship status: ', req.session.friendship.status);
-
-        let userIsSender = req.session.user.isSender
         let currentStatus = req.session.friendship.status;
 
-        req.session.friendship.nextAction = getNextAction(userIsSender, currentStatus)
-        console.log(req.session.friendship.nextAction);
+        //we find out what should be the next action that the friendship button will trigger, according to the current state of friendship and whether the logged-in user is the sender of the last action.
+
+        let nextAction = getNextAction(userIsSender, currentStatus)
+        req.session.friendship.nextAction = nextAction
+        console.log('**** new nextAction after load query is: ', nextAction, ' this is based on current db status, which is: ', req.session.friendship.status);
+        //we send the next action to the front, it will be displayed as html content of the button.
+
         res.json({
             success: true,
-            nextAction: req.session.friendship.nextAction
+            nextAction: nextAction
         })
     }).catch(err => console.log("THERE WAS AN ERROR IN /get friendship",err));
 })
 
 app.post('/update-friendship/:id/', (req, res) => {
+    console.log('ENTERING POST UPDATE FRIENDSHIP QUERY');
+
     let otherUser = req.params.id;
-    let nextAction = req.session.friendship.nextAction
-    let nextStatus = getNextStatus(nextAction)
 
-    if(nextAction = 'Request Friendship') {
+    //currentNextAction is the action triggered by the friendship button. it matches the html content of the button.
 
-        const qNewFriendship = `INSERT INTO friendships (sender_id, recipient_id, status) VALUES ($1, $2, $3) RETURNING id`
+    let currentNextAction = req.session.friendship.nextAction
+    console.log('*** "Current Next Action" in the update query prior to visiting the db is: -', currentNextAction, '-');
+
+    //generate the status which will be entered in db, according to the action triggered by the friendship button
+
+    let nextStatus = getNextStatus(currentNextAction)
+    console.log('*** newly generated Next Status before visting the db, which is going to be used to update the db, is: -', nextStatus, '-, if the Current Next Action is -Accept Request- the Next Status should be: -accepted-');
+    //if the action which the button has triggered is 'Request Friendship' (currently no active friendship in db) the next action will create new db row.
+
+    if(currentNextAction === 'Request Friendship') {
+        console.log('*** in Request Friendship query');
+
+        //the query qCreateNewFriendship creates a new row in the table, starts a new friendship.
+
+        const qCreateNewFriendship = `INSERT INTO friendships (sender_id, recipient_id, status) VALUES ($1, $2, $3)`
 
         const params = [req.session.user.id, otherUser, nextStatus]
 
-        db.query(qNewFriendship, params)
+        db.query(qCreateNewFriendship, params)
         .then((results) => {
             let queryResults = results.rows[0]
-            req.session.friendship.id = queryResults.id
-            req.session.friendship.status = nextStatus
-            nextAction = getNextAction(true, req.session.friendship.status)
+
+            //nextStatus (prior to the query, becomes the currentStatus)
+
+            let currentStatus = nextStatus
+
+            req.session.friendship.status = currentStatus
+
+            //the logged-in user sent the new friendship request, therefore the logged-in user is the sender.
+
+            let userIsSender = true;
+
+            //we find out which action will the friendship button trigger next time, according to the current status. The next action becomes the html value of the friendship button.
+
+            let nextAction = getNextAction(userIsSender, currentStatus)
+            req.session.friendship.nextAction = nextAction
             res.json({
                 success: true,
                 nextAction: nextAction
@@ -136,15 +175,54 @@ app.post('/update-friendship/:id/', (req, res) => {
 
     } else {
 
+        //if the next action is not 'Request Friendship' (there is currently already an active friendship) the action triggered by the friendship button will update the db, instead of creating a new row.
+
         const qUpdateFriendship = `UPDATE friendships SET status = $1 WHERE id = $2`
 
         const params = [nextStatus, req.session.friendship.id]
 
+        console.log('*** the Params which are going to be used to update the db on the friendship update query are, "nextStatus": -', nextStatus, '-, and "friendshipId": -', req.session.friendship.id, '-');
+
         db.query(qUpdateFriendship, params)
         .then((results) => {
-            req.session.friendship.status = nextStatus
-            nextAction = getNextAction(true, currentStatus)
             let queryResults = results.rows[0]
+            console.log('*** the Results of the friendship update query are: ', queryResults);
+            //After updating the db, the next status becomes the current status.
+
+            let currentStatus = nextStatus
+
+            console.log('*** After updating the db, the Next Status: -', nextStatus, '- becomes the current status: -', currentStatus, '-');
+
+            req.session.friendship.status = currentStatus
+
+            console.log('*** "req.session.friendship.status" has been updated with "currentStatus" and its value now is: -', req.session.friendship.status, '-');
+
+            console.log('*** old action "currentNextAction" after the update query is: -', currentNextAction, '-, we are going to generate a new "nextAction" one soon.');
+
+
+            //we identify if the logged-in user is the sender of the last friendship action triggered by the button. This is important in case the logged-in user sent a new friendship request, in which case the next action possible will be to cancel the request.
+
+            let userIsSender
+
+            if(req.session.user.id === req.session.friendship.senderId) {
+                userIsSender = true
+            }
+            else {
+                userIsSender = false
+            }
+
+            console.log('*** after update query "userIsSender" is: -', userIsSender, '-');
+
+            //we find out which will be the next action the logged-in user can trigger with the friendship button.
+
+            console.log('*** we are going to generate a new "nextAction" using two parameters. "userIsSender" with a value of: -', userIsSender, '-, and "currentStatus" with a value of: -', currentStatus, '-');
+
+            let nextAction = getNextAction(userIsSender, currentStatus)
+            req.session.friendship.nextAction = nextAction
+            console.log('*** the newly generated "nextAction" after performing update query, which will be sent to front is: -', nextAction,'-');
+
+            //the next action we just generated will become the html value of the friendship button.
+
             res.json({
                 success: true,
                 nextAction: nextAction
@@ -154,15 +232,32 @@ app.post('/update-friendship/:id/', (req, res) => {
 })
 
 app.post('/reject-friendship-request/:id', (req, res) => {
+
+    console.log('ENTERING REJECT REQUEST QUERY');
+    let otherUser = req.params.id
+    console.log('otherUser is: ', otherUser);
+    let newStatus = 'rejected';
+    let friendshipId = req.session.friendship.id
+    console.log('*** "friendship Id" in rejection query is:', friendshipId);
+
     const qRejectFriendshipRequest = `UPDATE friendships SET status = $1 WHERE id = $2`
 
-    const params = ['rejected', req.session.friendship.id]
+    const params = [newStatus, friendshipId]
 
     db.query(qRejectFriendshipRequest, params)
     .then((results) => {
         let queryResults = results.rows[0]
+        console.log('*** results of the rejection query after visiting the db are: ', queryResults);
+
+        let userIsSender = false;
+        let currentStatus = newStatus
+
+        let nextAction = getNextAction(userIsSender, currentStatus)
+        console.log('*** new "nextAction" generated after rejection query is: ', nextAction);
+
         res.json({
-            success: true
+            success: true,
+            nextAction: nextAction
         })
     })
 })
@@ -241,7 +336,6 @@ app.post('/attemptlogin', (req, res) => {
 })
 
 app.get('/getProfilePicture', (req, res) => {
-    console.log('entered queryGetPicture');
     const qGetProfilePicture = `SELECT picture_name FROM users WHERE id = $1`;
     const userId = [req.session.user.id];
 
@@ -251,7 +345,6 @@ app.get('/getProfilePicture', (req, res) => {
             console.log(req.session.user);
             res.json({success: false})
         } else {
-            console.log('in queryGetProfilePicture');
             req.session.user.pictureName = results.rows[0].picture_name
             res.json({
                 success: true,
@@ -323,7 +416,6 @@ app.get('/getUserBio', (req, res) => {
 })
 
 app.get('/getUser', (req, res) => {
-    console.log('getting user info from server');
     res.send({
         success: true,
         user: req.session.user

@@ -1,11 +1,11 @@
 const getNextAction = function(userIsSender, currentStatus) {
-    if(currentStatus == 'pending' && userIsSender) {
-        return 'Cancel Friendship'
+    if(currentStatus === 'pending' && userIsSender) {
+        return 'Cancel Request'
     }
-    else if(currentStatus == 'pending' && !userIsSender) {
-        return 'Accept Friendship'
+    else if(currentStatus === 'pending' && !userIsSender) {
+        return 'Accept Request'
     }
-    else if(currentStatus == 'accepted') {
+    else if(currentStatus === 'accepted') {
         return 'Terminate Friendship'
     }
     else {
@@ -13,17 +13,17 @@ const getNextAction = function(userIsSender, currentStatus) {
     }
 }
 
-const getNextStatus = function(nextAction){
-    if(nextAction == 'Cancel Friendship') {
+const getNextStatus = function(currentNextAction){
+    if(currentNextAction === 'Cancel Request') {
         return 'cancelled'
     }
-    else if(nextAction == 'Accept Friendship') {
+    else if(currentNextAction === 'Accept Request') {
         return 'accepted'
     }
-    else if(nextAction == 'Terminate Friendship') {
+    else if(currentNextAction === 'Terminate Friendship') {
         return 'terminated'
     }
-    else if(nextAction == 'Reject Friendship') {
+    else if(currentNextAction === 'Reject Friendship') {
         return 'rejected'
     }
     else {
