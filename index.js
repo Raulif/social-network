@@ -119,7 +119,7 @@ app.get('/get-current-friendship/:id', (req, res) => {
 
         res.json({
             success: true,
-            nextAction: nextAction
+            nextAction
         })
     }).catch(err => console.log("THERE WAS AN ERROR IN /get friendship",err));
 })
@@ -169,7 +169,7 @@ app.post('/update-friendship/:id/', (req, res) => {
             req.session.friendship.nextAction = nextAction
             res.json({
                 success: true,
-                nextAction: nextAction
+                nextAction
             })
         })
 
@@ -225,7 +225,7 @@ app.post('/update-friendship/:id/', (req, res) => {
 
             res.json({
                 success: true,
-                nextAction: nextAction
+                nextAction
             })
         })
     }
@@ -257,7 +257,7 @@ app.post('/reject-friendship-request/:id', (req, res) => {
 
         res.json({
             success: true,
-            nextAction: nextAction
+            nextAction
         })
     })
 })
