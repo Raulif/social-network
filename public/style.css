@@ -86,8 +86,8 @@ body {
     background-position: left -12% top 43%;
     background-color: white;
     background-size: 35%;
-
 }
+
 
 #topBar #logo {
     height: 100px;
@@ -218,4 +218,16 @@ body {
     background: red;
     color: white;
     font-size: 20px;
+}
+
+.friends-container {
+    width: 100%;
+}
+
+.requester {
+    border: 2px solid blue;
+}
+
+.accepted {
+    border: 2px solid green;
 }

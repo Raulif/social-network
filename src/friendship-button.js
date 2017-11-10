@@ -45,7 +45,7 @@ export default class FriendshipButton extends React.Component {
 
                 {this.state.nextAction && <button id="update-friendship" onClick={this.clickHandler}>{nextAction}</button>}
 
-                {!this.state.nextAction && <div>Friendship Button</div>}
+                {!this.state.nextAction && <button id="create-friendship" onClick={this.clickHandler}>{nextAction}</button>}
 
                 {this.state.nextAction == 'Accept Request' && <button id="reject-friendship" onClick={this.rejectionHandler}>Reject Friendship</button>}
 

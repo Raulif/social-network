@@ -5,9 +5,18 @@ import Welcome from './welcome';
 import Register from './register';
 import Login from './login';
 import App from './app';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux'
 import Profile from './profile';
-import OtherUserProfile from './other-user-profile'
+import OtherUserProfile from './other-user-profile';
+import reducer from './reducers'
+import reduxPromise from 'redux-promise';
+import Friends from './friends'
+import Friend from './friend'
+import * as io from 'socket.io-client';
+import OnlineUsersContainer from './online-users-container'
 
+export const store = createStore(reducer, applyMiddleware(reduxPromise));
 
 
 const notLoggedInRouter = (
@@ -20,13 +29,16 @@ const notLoggedInRouter = (
 );
 
 const loggedInRouter = (
-    <Router history={browserHistory}>
-        <Route path="/" component={App}>
-            <IndexRoute component={Profile} />
-            <Route path="/user/:id" component={OtherUserProfile}/>
-        </Route>
-
-    </Router>
+    <Provider store={store}>
+        <Router history={browserHistory}>
+            <Route path="/" component={App}>
+                <IndexRoute component={Profile} />
+                <Route path="/user/:id" component={OtherUserProfile}/>
+                <Route path="/friends" component={Friends} />
+                <Route path="/online-users" component={OnlineUsersContainer} />
+            </Route>
+        </Router>
+    </Provider>
 );
 
 let router = location.pathname === '/welcome' ? notLoggedInRouter : loggedInRouter;

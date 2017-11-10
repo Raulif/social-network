@@ -1,12 +1,15 @@
 import React from 'react';
 import axios from 'axios';
 import ProfilePicture from './profile-picture';
+import {socket} from './socket'
 
 export default class App extends React.Component {
     constructor(props) {
         super(props),
         this.state = {}
+        socket();
     }
+
     componentDidMount() {
         axios.get('/getUser')
         .then((queryResponse) => {
@@ -41,8 +44,3 @@ export default class App extends React.Component {
         )
     }
 }
-//
-// <div>
-//     <label htmlFor="file">Upload Picture</label>
-//     <input type="file" id="file"/>
-// </div>

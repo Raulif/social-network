@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const compression = require('compression');
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const bodyParser = require('body-parser')
 const spicedPg = require('spiced-pg');
 const cookieSession = require('cookie-session')
@@ -55,11 +57,123 @@ if (process.env.NODE_ENV != 'production') {
     }));
 }
 
-// const PENDING = 1
-//     , ACCEPTED = 2
-//     , REJECTED = 3
-//     , CANCELLED = 4
-//     , TERMINATED = 5;
+let onlineUsers = []
+
+app.post('/connect/:socketId', (req, res) => {
+    console.log('in post query user connect');
+    const socketIdAlreadyConnected = onlineUsers.find( user => user.socketId == socketId)
+    const userIdAlreadyConnected = onlineUsers.find( user => user.userId == userId)
+
+    if(!socketIdAlreadyConnected && io.sockets.sockets[socketId]) {
+        onlineUsers.push({
+            userId: req.session.user.id,
+            socketId: req.params.socketId
+        })
+    }
+    const qFindAllUsersById = `
+        SELECT id, firstname AS firstName, lastname AS lastName, email, bio, picture-name AS pictureName
+        FROM users
+        WHERE id = ANY($1)`
+
+    const arrayOfUserIds = onlineUsers.map( user => user.id )
+    console.log(arrayOfUserIds);
+
+    db.query(qFindAllUsersById, [arrayOfUserIds])
+    .then((onlineUsers) => {
+        console.log('online users after query are: ', onlineUsers);
+            io.socket.emit('onlineUsers', onlineUsers)
+            res.json({
+                success: true
+            })
+    }).catch(err => console.log("THERE WAS AN ERROR IN /get all users by id",err));
+})
+
+
+app.get('/get-friendship-requests', (req, res) => {
+    console.log('inside get friendships requests');
+    const loggedInUserId = req.session.user.id
+
+    const qGetFriendshipRequests =`
+        SELECT users.id, firstname, lastname, picture_name, status
+        FROM friendships
+        JOIN users
+        ON (status = $1 AND recipient_id = $3 AND sender_id = users.id)
+        OR (status = $2 AND recipient_id = $3 AND sender_id = users.id)
+        OR (status = $2 AND sender_id = $3 AND recipient_id = users.id)`
+
+    const params = ['pending', 'accepted', loggedInUserId]
+
+    db.query(qGetFriendshipRequests, params)
+    .then((results) => {
+        if(results.rowCount < 1) {
+            console.log('user has no friendship requests');
+            res.json({
+                success: false
+            })
+        }
+        else {
+            console.log('user has friends');
+            console.log(results.rows);
+            queryResults = results.rows
+            res.json({
+                success: true,
+                friendships: queryResults
+            })
+        }
+    }).catch(err => console.log("THERE WAS AN ERROR IN /get friendship requests",err));
+})
+
+
+
+app.post('/accept-friendship/:id', (req, res) => {
+
+    const friendId = req.params.id
+    const userId = req.session.user.id
+    const status = 'accepted'
+
+    const qAcceptFriendship = `
+        UPDATE friendships
+        SET status = $1
+        WHERE sender_id = $2
+        AND recipient_id = $3`
+
+    const params = [status, friendId, userId]
+
+    db.query(qAcceptFriendship, params)
+    .then((results) => {
+        const queryResults = results.rows[0]
+        res.json({
+            success: true
+        })
+    }).catch(err => console.log("THERE WAS AN ERROR IN /post accept friendship", err));
+})
+
+
+
+app.post('/end-friendship/:id', (req, res) => {
+
+    const friendId = req.params.id
+    const userId = req.session.user.id
+    const status = 'terminated'
+
+    const qEndFriendship = `
+        UPDATE friendships
+        SET status = $1
+        WHERE sender_id = $2 AND recipient_id = $3
+        OR recipient_id = $2 AND sender_id = $3`
+
+    const params = [status, friendId, userId]
+
+    db.query(qEndFriendship, params)
+    .then((results) => {
+        const queryResults = results.rows[0]
+        res.json({
+            success: true
+        })
+    }).catch(err => console.log("THERE WAS AN ERROR IN /post end friendship", err));
+})
+
+
 
 app.get('/get-user/:id', (req, res) => {
     const otherUserId = [req.params.id];
@@ -81,46 +195,63 @@ app.get('/get-current-friendship/:id', (req, res) => {
 
     //the query qGetCurrentFriendship gets the information on the friendship table which matches either the logged-in user or the other user
 
-    const qGetCurrentFriendship = `SELECT * FROM friendships WHERE sender_id = $1 AND recipient_id = $2 OR sender_id = $2 AND recipient_id = $1`
+    const qGetCurrentFriendship = `
+        SELECT *
+        FROM friendships
+        WHERE sender_id = $1 AND recipient_id = $2
+        OR sender_id = $2 AND recipient_id = $1`
 
     const params = [req.session.user.id, otherUserId]
     db.query(qGetCurrentFriendship, params)
     .then((results) => {
+        console.log(results);
+        if (results.rowCount < 1) {
+            req.session.friendship = {}
+            let userIsSender = true;
+            let currentStatus = 'no status'
+            let nextAction = getNextAction(userIsSender, currentStatus)
+            req.session.friendship.nextAction = nextAction
 
-        //we select the last row, which is the last row created in the table and is the current state of the friendship
-
-        let currentFriendship = results.rows[results.rows.length-1];
-
-        req.session.friendship = {
-            id: currentFriendship.id,
-            status: currentFriendship.status,
-            senderId: currentFriendship.sender_id
-        }
-
-        //we identify if the logged-in user is the sender of the last friendship action triggered by the button. This is important in case the logged-in user sent a new friendship request, in which case the next action possible will be to cancel the request.
-
-        let userIsSender
-
-        if(req.session.user.id === req.session.friendship.senderId) {
-            userIsSender = true
+            res.json({
+                success: true,
+                nextAction
+            })
         }
         else {
-            userIsSender = false
+            //we select the last row, which is the last row created in the table and is the current state of the friendship
+            let currentFriendship = results.rows[results.rows.length-1];
+            req.session.friendship = {
+                id: currentFriendship.id,
+                status: currentFriendship.status,
+                senderId: currentFriendship.sender_id
+            }
+
+            //we identify if the logged-in user is the sender of the last friendship action triggered by the button. This is important in case the logged-in user sent a new friendship request, in which case the next action possible will be to cancel the request.
+
+            let userIsSender
+
+            if(req.session.user.id === req.session.friendship.senderId) {
+                userIsSender = true
+            }
+            else {
+                userIsSender = false
+            }
+
+            let currentStatus = req.session.friendship.status;
+
+            //we find out what should be the next action that the friendship button will trigger, according to the current state of friendship and whether the logged-in user is the sender of the last action.
+
+            let nextAction = getNextAction(userIsSender, currentStatus)
+            console.log(nextAction);
+            req.session.friendship.nextAction = nextAction
+            console.log('**** new nextAction after load query is: ', nextAction, ' this is based on current db status, which is: ', req.session.friendship.status);
+            //we send the next action to the front, it will be displayed as html content of the button.
+
+            res.json({
+                success: true,
+                nextAction
+            })
         }
-
-        let currentStatus = req.session.friendship.status;
-
-        //we find out what should be the next action that the friendship button will trigger, according to the current state of friendship and whether the logged-in user is the sender of the last action.
-
-        let nextAction = getNextAction(userIsSender, currentStatus)
-        req.session.friendship.nextAction = nextAction
-        console.log('**** new nextAction after load query is: ', nextAction, ' this is based on current db status, which is: ', req.session.friendship.status);
-        //we send the next action to the front, it will be displayed as html content of the button.
-
-        res.json({
-            success: true,
-            nextAction
-        })
     }).catch(err => console.log("THERE WAS AN ERROR IN /get friendship",err));
 })
 
@@ -145,7 +276,9 @@ app.post('/update-friendship/:id/', (req, res) => {
 
         //the query qCreateNewFriendship creates a new row in the table, starts a new friendship.
 
-        const qCreateNewFriendship = `INSERT INTO friendships (sender_id, recipient_id, status) VALUES ($1, $2, $3)`
+        const qCreateNewFriendship = `
+            INSERT INTO friendships (sender_id, recipient_id, status)
+            VALUES ($1, $2, $3)`
 
         const params = [req.session.user.id, otherUser, nextStatus]
 
@@ -177,7 +310,10 @@ app.post('/update-friendship/:id/', (req, res) => {
 
         //if the next action is not 'Request Friendship' (there is currently already an active friendship) the action triggered by the friendship button will update the db, instead of creating a new row.
 
-        const qUpdateFriendship = `UPDATE friendships SET status = $1 WHERE id = $2`
+        const qUpdateFriendship = `
+            UPDATE friendships
+            SET status = $1
+            WHERE id = $2`
 
         const params = [nextStatus, req.session.friendship.id]
 
@@ -240,7 +376,10 @@ app.post('/reject-friendship-request/:id', (req, res) => {
     let friendshipId = req.session.friendship.id
     console.log('*** "friendship Id" in rejection query is:', friendshipId);
 
-    const qRejectFriendshipRequest = `UPDATE friendships SET status = $1 WHERE id = $2`
+    const qRejectFriendshipRequest = `
+        UPDATE friendships
+        SET status = $1
+        WHERE id = $2`
 
     const params = [newStatus, friendshipId]
 
@@ -289,7 +428,11 @@ app.post('/newuser', (req, res) => {
                 email: email,
                 password: hash
             }
-            const qRegisterUser = `INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id`
+            const qRegisterUser = `
+                INSERT INTO users (firstname, lastname, email, password)
+                VALUES ($1, $2, $3, $4)
+                RETURNING id`
+
             const params = [firstName, lastName, email, password]
             db.query(qRegisterUser, params).then(() => {
                 res.json({
@@ -336,10 +479,14 @@ app.post('/attemptlogin', (req, res) => {
 })
 
 app.get('/getProfilePicture', (req, res) => {
-    const qGetProfilePicture = `SELECT picture_name FROM users WHERE id = $1`;
-    const userId = [req.session.user.id];
+    const qGetProfilePicture = `
+        SELECT picture_name
+        FROM users
+        WHERE id = $1`;
 
-    db.query(qGetProfilePicture, userId).then((results) => {
+    const userId = req.session.user.id;
+
+    db.query(qGetProfilePicture, [userId]).then((results) => {
         if(results.rowCount == 0) {
             console.log('user has no profile picture');
             console.log(req.session.user);
@@ -359,7 +506,12 @@ app.post('/uploadPicture', uploader.single('file'), (req, res) => {
     if(req.file) {
         toS3(req.file)
         .then(() => {
-            const qInsertPictureName = `UPDATE users SET picture_name = $1 WHERE id = $2 RETURNING picture_name`;
+            const qInsertPictureName = `
+                UPDATE users
+                SET picture_name = $1
+                WHERE id = $2
+                RETURNING picture_name`;
+
             const params = [req.file.filename, req.session.user.id]
 
             return db.query(qInsertPictureName, params)
@@ -378,7 +530,11 @@ app.post('/uploadPicture', uploader.single('file'), (req, res) => {
 
 app.post('/updateUserBio', (req, res) => {
     console.log('this is req.body on update user bio query: ', req.body);
-    const qInsertUserBio = `UPDATE users SET bio = $1 WHERE id = $2`;
+    const qInsertUserBio = `
+        UPDATE users
+        SET bio = $1
+        WHERE id = $2`;
+
     const params = [req.body.bio, req.session.user.id]
     db.query(qInsertUserBio, params)
     .then((results) => {
@@ -391,7 +547,6 @@ app.post('/updateUserBio', (req, res) => {
 })
 
 app.get('/getUserBio', (req, res) => {
-    console.log('getting user bio from server');
     if(req.session.user.bio) {
         res.json({
             success: true,
@@ -433,6 +588,38 @@ app.get('*', function(req, res){
     }
 });
 
-app.listen(8080, function() {
+server.listen(8080, function() {
     console.log("I'm listening.")
 });
+//
+// io.on('connection', function(socket) {
+//     console.log(`socket with the id ${socket.id} is now connected`);
+//
+//     socket.on('disconnect', function() {
+//    var user = onlineUsers.find(function(user) {
+//         return user.socketId == socket.id
+//})
+//      onlineUsers= onlineUsers.filter(function(u){
+//        return u == user
+//})
+
+//      var stillOnline = onlineUsers.find(funciton(u) {
+// return u.userId == user.userId
+// })
+//
+// if(!stillOnline) {
+//     id: user.
+// }
+
+//         console.log(`socket with the id ${socket.id} is now disconnected`);
+//     });
+//     socket.on('thanks', function(data) {
+//         console.log(data);
+//     });
+//     io.sockets.emit('achtung', {
+//     warning: 'This site will go offline for maintenance in one hour.'
+// });
+//     socket.emit('welcome', {
+//        message: 'Welome. It is nice to see you'
+//    });
+// });

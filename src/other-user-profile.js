@@ -38,7 +38,7 @@ export default class OtherUserProfile extends React.Component {
     render(props) {
         return(
             <div id="other-user-profile">
-                <h1>{this.state.firstName}{this.state.lastName}</h1>
+                <h1>{this.state.firstName} {this.state.lastName}</h1>
                 <h2>My email is: {this.state.email}</h2>
                 <img src={`https://s3.amazonaws.com/raulsbucket2/${this.state.pictureName}`}/>
                 <FriendshipButton otherUserId={this.props.params.id} />
