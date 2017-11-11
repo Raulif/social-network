@@ -24,13 +24,13 @@ function getSocket() {
             store.dispatch(createOnlineUsers(onlineUsers));
         });
 
-        // socket.on('userJoined', function(user) {
-        //     store.dispatch(userJoined(user));
-        // });
-        //
-        // socket.on('userLeft', function(id) {
-        //     store.dispatch(userLeft(id));
-        // });
+        socket.on('userJoined', function(users) {
+            store.dispatch(userJoined(users));
+        });
+
+        socket.on('userLeft', function(id) {
+            store.dispatch(userLeft(id));
+        });
     }
     return socket;
 }

@@ -15,8 +15,10 @@ import FriendsContainer from './friends-container'
 import Friend from './friend'
 import * as io from 'socket.io-client';
 import OnlineUsersContainer from './online-users-container'
+import { composeWithDevTools } from 'redux-devtools-extension';
 
-export const store = createStore(reducer, applyMiddleware(reduxPromise));
+
+export const store = createStore(reducer, composeWithDevTools(applyMiddleware(reduxPromise)));
 
 
 const notLoggedInRouter = (

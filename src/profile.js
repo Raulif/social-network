@@ -14,7 +14,9 @@ export default class Profile extends React.Component {
                 <ProfilePicture userId={this.props.userId}/>
                 <h1 className="user-name">{this.props.firstName} {this.props.lastName}</h1>
                 <EditableBio />
-                <Link to="/friends">See your friend requestes</Link>
+                <Link to="/friends">See your friend requests</Link>
+                <Link to="/online-users" id="online-users">See who's online</Link>
+
             </div>
         )
     }

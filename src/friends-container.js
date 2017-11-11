@@ -38,7 +38,7 @@ class FriendsContainer extends React.Component {
         )
     }
 }
-//
+
 const mapStateToProps = state => ({
     friends: state.friendships && state.friendships.filter(friendships => friendships.status == 'accepted'),
     requesters: state.friendships && state.friendships.filter(friendships => friendships.status == 'pending')

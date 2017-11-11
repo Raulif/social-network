@@ -2,9 +2,11 @@ import React from 'react';
 import axios from 'axios';
 import ProfilePicture from './profile-picture';
 import {socket} from './socket';
+import { connect } from 'react-redux'
+
 import { Link } from 'react-router';
 
-export default class App extends React.Component {
+class App extends React.Component {
     constructor(props) {
         super(props),
         this.state = {}
@@ -46,3 +48,6 @@ export default class App extends React.Component {
         )
     }
 }
+
+let mapStateToProps = (state) => ({state})
+export default connect(mapStateToProps)(App)

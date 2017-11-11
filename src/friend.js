@@ -1,5 +1,4 @@
 import React from 'react';
-import ProfilePicture from './profile-picture';
 import {Button} from './reusables';
 
 export default function Friend({friend, requester, endFriendship, acceptFriendship}) {

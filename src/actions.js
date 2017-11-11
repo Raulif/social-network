@@ -33,9 +33,10 @@ export function endFriendship(user) {
 
 export function connectLoggedInUser(socketId) {
     return axios.post(`/connect/${socketId}`)
-    .then(() => {
+    .then(({data}) => {
         return {
-            type: 'CONNECT_LOGGEDIN_USER'
+            type: 'CONNECT_LOGGEDIN_USER',
+            userId: data.userId
         }
     }).catch(err => console.log("THERE WAS AN ERROR IN /action connectLoggedInUser", err));
 }
@@ -44,6 +45,13 @@ export function createOnlineUsers(onlineUsers) {
     console.log('onlineUsers in action CREATE ONLINE USERS are: ', onlineUsers);
     return {
         type: 'CREATE_ONLINE_USERS',
+        onlineUsers
+    }
+}
+
+export function userJoined(onlineUsers) {
+    return {
+        type: 'USER_JOINED',
         onlineUsers
     }
 }

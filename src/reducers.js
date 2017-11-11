@@ -36,11 +36,14 @@ export default function(state = {}, action) {
     }
 
     if(action.type == 'CONNECT_LOGGEDIN_USER') {
-        return
+        state = Object.assign({}, state, {
+            userId: action.userId
+        })
+        return state
     }
 
-    if(action.type == 'CREATE_ONLINE_USERS') {
-        console.log('in reducer create online users');
+    if(action.type == 'CREATE_ONLINE_USERS' || action.type == 'USER_JOINED') {
+        console.log('in reducer create online users or user joined');
         state = Object.assign({}, state, {
             onlineUsers: action.onlineUsers
         })
