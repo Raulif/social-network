@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import ProfilePicture from './profile-picture';
-import {socket} from './socket'
+import {socket} from './socket';
+import { Link } from 'react-router';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -36,6 +37,7 @@ export default class App extends React.Component {
         return (
             <div>
                 <div id="topBar">
+                    <Link to="/" id="home-link"></Link>
                     <ProfilePicture userId={this.state.userId} alt={`${this.state.firstName}-${this.state.lastName}`} />
                 </div>
                 {clonedChildren}

@@ -11,7 +11,7 @@ import Profile from './profile';
 import OtherUserProfile from './other-user-profile';
 import reducer from './reducers'
 import reduxPromise from 'redux-promise';
-import Friends from './friends'
+import FriendsContainer from './friends-container'
 import Friend from './friend'
 import * as io from 'socket.io-client';
 import OnlineUsersContainer from './online-users-container'
@@ -34,7 +34,7 @@ const loggedInRouter = (
             <Route path="/" component={App}>
                 <IndexRoute component={Profile} />
                 <Route path="/user/:id" component={OtherUserProfile}/>
-                <Route path="/friends" component={Friends} />
+                <Route path="/friends" component={FriendsContainer} />
                 <Route path="/online-users" component={OnlineUsersContainer} />
             </Route>
         </Router>

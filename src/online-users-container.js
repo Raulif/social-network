@@ -6,27 +6,24 @@ class OnlineUsersContainer extends React.Component {
     constructor(props) {
         super(props)
     }
-    render(props) {
-        const { onlineUsers } = this.props
 
+    render(props) {
+        const { onlineUsers } = this.props;
         if(!onlineUsers) {
             return(
-                <div>Current no users online</div>
+                <div>Currently no users online</div>
             )
         }
         return(
             <div>
                 <h1>Following users are currently online</h1>
-                <OnlineUsers onlineUsers={onlineUsers}/>
+                <OnlineUsers onlineUsers={onlineUsers} />
             </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        onlineUsers: state.onlineUsers && state.onlineUsers
-    }
-}
-
-export default connect (mapStateToProps)(OnlineUsersContainer)
+var mapStateToProps = (state) => ({
+    onlineUsers: state.onlineUsers
+})
+export default connect(mapStateToProps)(OnlineUsersContainer)

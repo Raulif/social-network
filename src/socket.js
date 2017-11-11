@@ -1,6 +1,6 @@
 import * as io from 'socket.io-client';
 import { store } from './start';
-import { onlineUsers, userJoined, userLeft } from './actions';
+import { connectLoggedInUser, createOnlineUsers, userJoined, userLeft } from './actions';
 
 let socket;
 
@@ -9,9 +9,9 @@ function getSocket() {
         socket = io.connect();
 
         console.log('in socket io');
-        socket.on('connection', function(socket) {
+        socket.on('connect', function() {
             console.log(`socket with the id ${socket.id} is now connected`);
-            store.dispatch( connectLoggedInUser(socket.id));
+            store.dispatch(connectLoggedInUser(socket.id));
 
         });
 
@@ -20,6 +20,7 @@ function getSocket() {
         })
 
         socket.on('onlineUsers', function(onlineUsers) {
+            console.log('onlineUsers in socket: ', onlineUsers);
             store.dispatch(createOnlineUsers(onlineUsers));
         });
 

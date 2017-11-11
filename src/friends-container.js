@@ -6,7 +6,7 @@ import Friend from './friend';
 import {endFriendship, acceptFriendship} from './actions';
 
 
-class Friends extends React.Component {
+class FriendsContainer extends React.Component {
 
     componentDidMount() {
         console.log('component did mount');
@@ -39,12 +39,10 @@ class Friends extends React.Component {
     }
 }
 //
-const mapStateToProps = state => {
-    return {
-        friends: state.friendships && state.friendships.filter(friendships => friendships.status == 'accepted'),
-        requesters: state.friendships && state.friendships.filter(friendships => friendships.status == 'pending')
-    }
-}
+const mapStateToProps = state => ({
+    friends: state.friendships && state.friendships.filter(friendships => friendships.status == 'accepted'),
+    requesters: state.friendships && state.friendships.filter(friendships => friendships.status == 'pending')
+})
 
 
-export default connect(mapStateToProps)(Friends)
+export default connect(mapStateToProps)(FriendsContainer)

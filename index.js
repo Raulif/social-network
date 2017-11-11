@@ -60,31 +60,36 @@ if (process.env.NODE_ENV != 'production') {
 let onlineUsers = []
 
 app.post('/connect/:socketId', (req, res) => {
+
+    const userId = req.session.user.id;
+    const socketId = req.params.socketId
+
     console.log('in post query user connect');
     const socketIdAlreadyConnected = onlineUsers.find( user => user.socketId == socketId)
     const userIdAlreadyConnected = onlineUsers.find( user => user.userId == userId)
 
     if(!socketIdAlreadyConnected && io.sockets.sockets[socketId]) {
         onlineUsers.push({
-            userId: req.session.user.id,
-            socketId: req.params.socketId
+            userId,
+            socketId
         })
     }
     const qFindAllUsersById = `
-        SELECT id, firstname AS firstName, lastname AS lastName, email, bio, picture-name AS pictureName
+        SELECT id, firstname AS firstName, lastname AS lastName, email, bio, picture_name AS pictureName
         FROM users
         WHERE id = ANY($1)`
 
-    const arrayOfUserIds = onlineUsers.map( user => user.id )
-    console.log(arrayOfUserIds);
+    const arrayOfUserIds = onlineUsers.map( user => user.userId )
 
     db.query(qFindAllUsersById, [arrayOfUserIds])
-    .then((onlineUsers) => {
-        console.log('online users after query are: ', onlineUsers);
-            io.socket.emit('onlineUsers', onlineUsers)
-            res.json({
-                success: true
-            })
+    .then((queryResults) => {
+        console.log('online users after query are: ', queryResults.rows);
+
+        io.sockets.sockets[socketId].emit('onlineUsers', queryResults.rows)
+        res.json({
+            success: true,
+            onlineUsers: queryResults.rows
+        })
     }).catch(err => console.log("THERE WAS AN ERROR IN /get all users by id",err));
 })
 

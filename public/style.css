@@ -88,10 +88,12 @@ body {
     background-size: 35%;
 }
 
-
-#topBar #logo {
-    height: 100px;
-    display: inline-block;
+#home-link {
+    height: 100%;
+    width: 25%;
+    cursor: pointer;
+    background-color: transparent;
+    float: left;
 }
 
 

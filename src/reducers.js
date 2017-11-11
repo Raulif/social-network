@@ -1,7 +1,6 @@
 export default function(state = {}, action) {
 
     if(action.type == 'RECEIVE_USERS') {
-        console.log('inside reducer receive users');
         console.log('action.friendships is: ',action.friendships);
         state = Object.assign({}, state, {
             friendships: action.friendships
@@ -10,7 +9,6 @@ export default function(state = {}, action) {
 
 
     if(action.type == 'END_FRIENDSHIP') {
-        console.log('state on end friendship', state);
         state = Object.assign({}, state, {
             friendships: state.friendships.map((user) => {
                 if(user.id != action.user.id) {
@@ -25,7 +23,6 @@ export default function(state = {}, action) {
 
 
     if(action.type == 'ACCEPT_FRIENDSHIP') {
-        console.log('state on accept friendship', state);
         state = Object.assign({}, state, {
             friendships: state.friendships.map((user) => {
                 if(user.id != action.user.id) {
@@ -47,6 +44,7 @@ export default function(state = {}, action) {
         state = Object.assign({}, state, {
             onlineUsers: action.onlineUsers
         })
+        console.log('state in reducer create-online-users after object.assign is: ', state);
         return state
     }
 

@@ -41,6 +41,7 @@ export function connectLoggedInUser(socketId) {
 }
 
 export function createOnlineUsers(onlineUsers) {
+    console.log('onlineUsers in action CREATE ONLINE USERS are: ', onlineUsers);
     return {
         type: 'CREATE_ONLINE_USERS',
         onlineUsers
