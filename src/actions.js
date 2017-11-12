@@ -13,7 +13,7 @@ export function receiveFriendshipRequests() {
 
 export function acceptFriendship(user) {
     return axios.post(`/accept-friendship/${user.id}`)
-    .then(({ data }) => {
+    .then(() => {
         return {
             type: 'ACCEPT_FRIENDSHIP',
             user
@@ -23,7 +23,7 @@ export function acceptFriendship(user) {
 
 export function endFriendship(user) {
     return axios.post(`/end-friendship/${user.id}`)
-    .then(({data}) => {
+    .then(() => {
         return {
             type: 'END_FRIENDSHIP',
             user
@@ -31,27 +31,31 @@ export function endFriendship(user) {
     }).catch(err => console.log("THERE WAS AN ERROR IN /action endFriendship", err));
 }
 
-export function connectLoggedInUser(socketId) {
-    return axios.post(`/connect/${socketId}`)
-    .then(({data}) => {
-        return {
-            type: 'CONNECT_LOGGEDIN_USER',
-            userId: data.userId
-        }
-    }).catch(err => console.log("THERE WAS AN ERROR IN /action connectLoggedInUser", err));
+export function storeUserInfo(user) {
+    return{
+        type: 'STORE_USER_INFO',
+        user
+    }
 }
 
-export function createOnlineUsers(onlineUsers) {
-    console.log('onlineUsers in action CREATE ONLINE USERS are: ', onlineUsers);
+export function updateOnlineUsers(onlineUsers){
     return {
-        type: 'CREATE_ONLINE_USERS',
+        type: 'UPDATE_ONLINE_USERS',
         onlineUsers
     }
 }
 
-export function userJoined(onlineUsers) {
-    return {
+export function userJoined(newUser){
+    return{
         type: 'USER_JOINED',
-        onlineUsers
+        newUser
+    }
+}
+
+export function userLeft(userId){
+    return{
+        type: 'USER_LEFT',
+        userId,
+
     }
 }

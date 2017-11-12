@@ -28,9 +28,9 @@ export default class Register extends React.Component {
             email: this.email,
             password: this.password
 
-        }).then((resp) => {
-            if (resp.data.success) {
-                location.replace('/user')
+        }).then((res) => {
+            if (res.data.success) {
+                location.replace('/')
             } else {
                 this.setState({error: true})
             }
@@ -42,7 +42,7 @@ export default class Register extends React.Component {
 
         return (
             <div className="welcome-bottom-container">
-                {this.state.error ? <div className="warning">Uh oh, that FAILED</div> : <div className="filler"/>}
+                {!this.state.error ? <div className="filler"/> : <div className="warning">Uh oh, that FAILED</div> }
                 <Input type="text" name="firstName" onChange={e => this.inputHandler(e)} placeholder="first name"/>
                 <Input type="text" name="lastName" onChange={e => this.inputHandler(e)} placeholder="last name"/>
                 <Input type="text" name="email" onChange={e => this.inputHandler(e)} placeholder="email"/>

@@ -35,20 +35,31 @@ export default function(state = {}, action) {
         })
     }
 
-    if(action.type == 'CONNECT_LOGGEDIN_USER') {
+    if(action.type == 'STORE_USER_INFO') {
         state = Object.assign({}, state, {
-            userId: action.userId
+            user: action.user
         })
-        return state
     }
 
-    if(action.type == 'CREATE_ONLINE_USERS' || action.type == 'USER_JOINED') {
-        console.log('in reducer create online users or user joined');
+    if(action.type == 'UPDATE_ONLINE_USERS') {
         state = Object.assign({}, state, {
             onlineUsers: action.onlineUsers
         })
-        console.log('state in reducer create-online-users after object.assign is: ', state);
-        return state
+    }
+
+    if(action.type == 'USER_JOINED') {
+        if(state.onlineUsers && !state.onlineUsers.find(user => user.id == action.newUser.id)) {
+            state = Object.assign({}, state, {
+                onlineUsers: [...state.onlineUsers, action.newUser]
+            })
+        }
+    }
+
+    if(action.type == 'USER_LEFT') {
+        state = Object.assign({}, state, {
+            onlineUsers: state.onlineUsers.filter(onlineUser => onlineUser.id !== action.userId)
+        })
+        console.log('in reducers ', state.onlineUsers);
     }
 
     return state;

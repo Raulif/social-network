@@ -57,50 +57,6 @@ if (process.env.NODE_ENV != 'production') {
     }));
 }
 
-let arrayOfOnlineUsers = []
-
-app.post('/connect/:socketId', (req, res) => {
-
-    const userId = req.session.user.id;
-    const socketId = req.params.socketId
-
-    console.log('in post query user connect');
-    const socketIdAlreadyConnected = arrayOfOnlineUsers.find( user => user.socketId == socketId)
-    const userIdAlreadyConnected = arrayOfOnlineUsers.find( user => user.userId == userId)
-    console.log('userIdAlreadyConnected: ', userIdAlreadyConnected);
-
-    if(!socketIdAlreadyConnected && io.sockets.sockets[socketId]) {
-        arrayOfOnlineUsers.push({
-            userId,
-            socketId
-        })
-    }
-
-    const qFindAllUsersById = `
-        SELECT id, firstname AS firstName, lastname AS lastName, email, bio, picture_name AS pictureName
-        FROM users
-        WHERE id = ANY($1)`
-
-    const arrayOfUserIds = arrayOfOnlineUsers.map( user => user.userId )
-
-    db.query(qFindAllUsersById, [arrayOfUserIds])
-    .then((queryResults) => {
-        console.log('online users after query are: ', queryResults.rows);
-        let onlineUsers = queryResults.rows
-        io.sockets.sockets[socketId].emit('onlineUsers', onlineUsers)
-
-        if(!userIdAlreadyConnected) {
-            io.sockets.emit('userJoined', onlineUsers)
-        }
-
-        res.json({
-            success: true,
-            userId
-        })
-    }).catch(err => console.log("THERE WAS AN ERROR IN /get all users by id",err));
-})
-
-
 app.get('/get-friendship-requests', (req, res) => {
     console.log('inside get friendships requests');
     const loggedInUserId = req.session.user.id
@@ -446,7 +402,9 @@ app.post('/newuser', (req, res) => {
                 RETURNING id`
 
             const params = [firstName, lastName, email, password]
-            db.query(qRegisterUser, params).then(() => {
+            db.query(qRegisterUser, params).then((results) => {
+                console.log(results);
+                // req.session.user.id = results.rows[0].id
                 res.json({
                     success: true
                 })
@@ -589,6 +547,74 @@ app.get('/getUser', (req, res) => {
     })
 })
 
+//SOCKET IO
+
+let arrayOfOnlineUsers = []
+
+app.get('/connect/:socketId', (req, res) => {
+
+    const userId = req.session.user.id;
+    const socketId = req.params.socketId
+
+    const userIdAlreadyConnected = arrayOfOnlineUsers.find( user => user.userId == userId)
+
+    if(!userIdAlreadyConnected) {
+        arrayOfOnlineUsers.push({
+            userId,
+            socketId
+        })
+        let newUser = req.session.user
+
+        io.sockets.emit('userJoined', newUser)
+    }
+
+    const qFindAllUsersById = `
+        SELECT id, firstname AS firstName, lastname AS lastName, email, bio, picture_name AS pictureName
+        FROM users
+        WHERE id = ANY($1)`
+
+    const arrayOfUserIds = arrayOfOnlineUsers.map( user => user.userId )
+
+    db.query(qFindAllUsersById, [arrayOfUserIds])
+    .then((queryResults) => {
+        let onlineUsers = queryResults.rows
+
+        io.sockets.sockets[socketId].emit('onlineUsers', onlineUsers)
+
+        res.json({
+            success: true,
+            user: req.session.user
+        })
+    }).catch(err => console.log("THERE WAS AN ERROR IN /get all users by id",err));
+})
+
+io.on('connection', (socket) => {
+    console.log(`user with socket id ${socket.id} is now connected`);
+
+    socket.on('disconnect', () => {
+        console.log(`user with socket id ${socket.id} is now disconnected`);
+
+        const disconnectedSocket = arrayOfOnlineUsers.filter(user => user.socketId === socket.id)[0];
+
+        const userIndexInArray = arrayOfOnlineUsers.indexOf(disconnectedSocket);
+
+        arrayOfOnlineUsers.splice(userIndexInArray, 1);
+
+        var anotherConnection = () => {
+            arrayOfOnlineUsers.find((user) =>{
+                return user.userId == disconnectedSocket.userId;
+            })
+        }
+
+        if(anotherConnection >= 1) {
+            anotherConnection()
+        } else {
+            io.sockets.emit('userLeft', { id: disconnectedSocket.userId });
+        }
+
+    })
+})
+
 
 
 app.get('*', function(req, res){
@@ -603,35 +629,3 @@ app.get('*', function(req, res){
 server.listen(8080, function() {
     console.log("I'm listening.")
 });
-//
-// io.on('connection', function(socket) {
-//     console.log(`socket with the id ${socket.id} is now connected`);
-//
-//     socket.on('disconnect', function() {
-//    var user = onlineUsers.find(function(user) {
-//         return user.socketId == socket.id
-//})
-//      onlineUsers= onlineUsers.filter(function(u){
-//        return u == user
-//})
-
-//      var stillOnline = onlineUsers.find(funciton(u) {
-// return u.userId == user.userId
-// })
-//
-// if(!stillOnline) {
-//     id: user.
-// }
-
-//         console.log(`socket with the id ${socket.id} is now disconnected`);
-//     });
-//     socket.on('thanks', function(data) {
-//         console.log(data);
-//     });
-//     io.sockets.emit('achtung', {
-//     warning: 'This site will go offline for maintenance in one hour.'
-// });
-//     socket.emit('welcome', {
-//        message: 'Welome. It is nice to see you'
-//    });
-// });
