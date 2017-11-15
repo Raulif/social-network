@@ -6,7 +6,7 @@ import { Input, Button } from './reusables'
 
 export default class Register extends React.Component {
     constructor(props){
-        super(props),
+        super(props)
         this.state = {
             error: false,
         }
@@ -19,12 +19,13 @@ export default class Register extends React.Component {
     }
 
     submit() {
-        if(!this.firstName || !this.lastName || this.email || this.password) {
+        if(!this.firstname || !this.lastname || this.email || this.password) {
             this.setState({error: true})
         }
+
         axios.post('/newuser', {
-            firstname: this.firstName,
-            lastname: this.lastName,
+            firstname: this.firstname,
+            lastname: this.lastname,
             email: this.email,
             password: this.password
 
@@ -43,8 +44,8 @@ export default class Register extends React.Component {
         return (
             <div className="welcome-bottom-container">
                 {!this.state.error ? <div className="filler"/> : <div className="warning">Uh oh, that FAILED</div> }
-                <Input type="text" name="firstName" onChange={e => this.inputHandler(e)} placeholder="first name"/>
-                <Input type="text" name="lastName" onChange={e => this.inputHandler(e)} placeholder="last name"/>
+                <Input type="text" name="firstname" onChange={e => this.inputHandler(e)} placeholder="first name"/>
+                <Input type="text" name="lastname" onChange={e => this.inputHandler(e)} placeholder="last name"/>
                 <Input type="text" name="email" onChange={e => this.inputHandler(e)} placeholder="email"/>
                 <Input type="password" name="password" onChange={e => this.inputHandler(e)} placeholder="password"/>
                 <Button onClick={ () => this.submit() }>Submit!</Button>

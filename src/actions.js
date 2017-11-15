@@ -55,7 +55,20 @@ export function userJoined(newUser){
 export function userLeft(userId){
     return{
         type: 'USER_LEFT',
-        userId,
+        userId
+    }
+}
 
+export function chatMessages(messages){
+    return{
+        type: 'CHAT_MESSAGES',
+        messages
+    }
+}
+
+export function incomingMessage(message) {
+    return{
+        type: 'INCOMING_MESSAGE',
+        message
     }
 }

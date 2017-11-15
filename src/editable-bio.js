@@ -60,7 +60,7 @@ export default class EditableBio extends React.Component {
 
                 {this.state.bioEditorVisible &&
                     <Button
-                        className="bio-button"
+                        className="secondary-button"
                         type="submit"
                         onClick={() => this.submit()} >
                         Update

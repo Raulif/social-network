@@ -1,7 +1,6 @@
 export default function(state = {}, action) {
 
     if(action.type == 'RECEIVE_USERS') {
-        console.log('action.friendships is: ',action.friendships);
         state = Object.assign({}, state, {
             friendships: action.friendships
         })
@@ -45,6 +44,7 @@ export default function(state = {}, action) {
         state = Object.assign({}, state, {
             onlineUsers: action.onlineUsers
         })
+
     }
 
     if(action.type == 'USER_JOINED') {
@@ -57,9 +57,21 @@ export default function(state = {}, action) {
 
     if(action.type == 'USER_LEFT') {
         state = Object.assign({}, state, {
-            onlineUsers: state.onlineUsers.filter(onlineUser => onlineUser.id !== action.userId)
+            onlineUsers: state.onlineUsers.filter(onlineUser => onlineUser.id !== action.userId.id)
         })
-        console.log('in reducers ', state.onlineUsers);
+    }
+
+    if(action.type == 'CHAT_MESSAGES') {
+        state = Object.assign({}, state, {
+            messages: action.messages
+        })
+    }
+
+    if(action.type == 'INCOMING_MESSAGE') {
+        console.log(action.message);
+        state = Object.assign({}, state, {
+            messages: [...state.messages, action.message]
+        })
     }
 
     return state;

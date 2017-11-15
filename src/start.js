@@ -15,6 +15,7 @@ import FriendsContainer from './friends-container'
 import Friend from './friend'
 import * as io from 'socket.io-client';
 import OnlineUsersContainer from './online-users-container'
+import ChatRoom from './chat-room'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 
@@ -38,6 +39,7 @@ const loggedInRouter = (
                 <Route path="/user/:id" component={OtherUserProfile}/>
                 <Route path="/friends" component={FriendsContainer} />
                 <Route path="/online-users" component={OnlineUsersContainer} />
+                <Route path="/chat" component={ChatRoom} />
             </Route>
         </Router>
     </Provider>

@@ -1,6 +1,6 @@
 import * as io from 'socket.io-client';
 import { store } from './start';
-import { connectLoggedInUser, updateOnlineUsers, userJoined, userLeft, storeUserInfo } from './actions';
+import { connectLoggedInUser, updateOnlineUsers, userJoined, userLeft, storeUserInfo, chatMessages, incomingMessage } from './actions';
 import axios from 'axios';
 
 let socket;
@@ -27,8 +27,17 @@ function getSocket() {
         socket.on('userLeft', function(userId) {
             store.dispatch(userLeft(userId));
         });
+
+        socket.on('chatMessages', function(messages) {
+            store.dispatch(chatMessages(messages))
+        });
+
+        socket.on('broadcast-new-message', function(message) {
+            store.dispatch(incomingMessage(message))
+        })
     }
     return socket;
 }
 
 export {getSocket as socket};
+export {io}

@@ -12,11 +12,11 @@ export default class Profile extends React.Component {
         return(
             <div id='profile-container'>
                 <ProfilePicture userId={this.props.userId}/>
-                <h1 className="user-name">{this.props.firstName} {this.props.lastName}</h1>
+                <h1 className="user-name">{this.props.firstname} {this.props.lastname}</h1>
                 <EditableBio />
-                <Link to="/friends">See your friend requests</Link>
-                <Link to="/online-users" id="online-users">See who's online</Link>
-
+                <Link to="/friends" className="profile-link">See your friend requests</Link>
+                <Link to="/online-users" className="profile-link">See who's online</Link>
+                <Link to="/chat" className="profile-link">Let's chat</Link>
             </div>
         )
     }

@@ -11,26 +11,26 @@ export default class ProfilePicture extends React.Component {
     componentDidMount() {
         axios.get('/getProfilePicture')
         .then((queryResponse) => {
-            let pictureName = queryResponse.data.pictureName;
-            this.setState({pictureName: pictureName})
+            let picturename = queryResponse.data.picturename;
+            this.setState({picturename: picturename})
        })
     }
 
     changeHandler() {
         axios.get('/getProfilePicture')
         .then((queryResponse) => {
-            let pictureName = queryResponse.data.pictureName;
+            let picturename = queryResponse.data.picturename;
             this.setState({
-                pictureName: pictureName,
+                picturename: picturename,
             })
        })
     }
 
     render() {
-        if(!this.state.pictureName) {
+        if(!this.state.picturename) {
             return (
                 <div>
-                    <img id="profile-picture" alt={`${this.props.firstName}-${this.props.lastName}`}  src={`https://api.adorable.io/avatars/95/${this.props.userId}`}
+                    <img id="profile-picture" alt={`${this.props.firstname}-${this.props.lastname}`}  src={`https://api.adorable.io/avatars/95/${this.props.userId}`}
                     onClick={() => this.setState({pictureUploadVisible: true})}/>
 
                     {this.state.pictureUploadVisible && <PictureUpload onChange={()=> this.changeHandler()}/>}
@@ -39,11 +39,11 @@ export default class ProfilePicture extends React.Component {
         } else {
             return (
                 <div>
-                    <img id="profile-picture" alt={`${this.props.firstName}-${this.props.lastName}`}  src={`https://s3.amazonaws.com/raulsbucket2/${this.state.pictureName}`}
+                    <img id="profile-picture" alt={`${this.props.firstname}-${this.props.lastname}`}  src={`https://s3.amazonaws.com/raulsbucket2/${this.state.picturename}`}
                     onClick={() => this.setState({pictureUploadVisible: true})}/>
 
                     {this.state.pictureUploadVisible && <PictureUpload
-                    updateImage = {newPictureName => this.setState({pictureName: newPictureName, pictureUploadVisible: false})}
+                    updateImage = {newPictureName => this.setState({picturename: newPictureName, pictureUploadVisible: false})}
                     onChange={()=> this.changeHandler()} />}
                 </div>
             )

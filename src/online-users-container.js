@@ -20,7 +20,6 @@ class OnlineUsersContainer extends React.Component {
                 {onlineUsers && <OnlineUsers onlineUsers={onlineUsers} />}
             </div>
         )
-
     }
 }
 

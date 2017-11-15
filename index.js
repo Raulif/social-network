@@ -384,15 +384,15 @@ app.post('/newuser', (req, res) => {
         console.log('missing fields');
         res.json({success: false})
     } else {
-        let firstName = req.body.firstname;
-        let lastName = req.body.lastname;
+        let firstname = req.body.firstname;
+        let lastname = req.body.lastname;
         let email = req.body.email;
 
         hashPassword(req.body.password).then((hash) => {
             let password = hash;
             req.session.user = {
-                firstName: firstName,
-                lastName: lastName,
+                firstname: firstname,
+                lastname: lastname,
                 email: email,
                 password: hash
             }
@@ -401,7 +401,7 @@ app.post('/newuser', (req, res) => {
                 VALUES ($1, $2, $3, $4)
                 RETURNING id`
 
-            const params = [firstName, lastName, email, password]
+            const params = [firstname, lastname, email, password]
             db.query(qRegisterUser, params).then((results) => {
                 console.log(results);
                 // req.session.user.id = results.rows[0].id
@@ -435,8 +435,8 @@ app.post('/attemptlogin', (req, res) => {
                 checkPassword(plainPassword, hashedPasswordFromDatabase).then(() => {
                     req.session.user = {
                         id: userData.id,
-                        firstName: userData.firstname,
-                        lastName: userData.lastname,
+                        firstname: userData.firstname,
+                        lastname: userData.lastname,
                         email: userData.email
                     }
                     res.json({
@@ -462,10 +462,10 @@ app.get('/getProfilePicture', (req, res) => {
             console.log(req.session.user);
             res.json({success: false})
         } else {
-            req.session.user.pictureName = results.rows[0].picture_name
+            req.session.user.picturename = results.rows[0].picture_name
             res.json({
                 success: true,
-                pictureName: req.session.user.pictureName
+                picturename: req.session.user.picturename
             })
     }
     }).catch(err => console.log("THERE WAS AN ERROR IN /getProfilePicture",err));
@@ -489,7 +489,7 @@ app.post('/uploadPicture', uploader.single('file'), (req, res) => {
                 console.log('success in queryUploadPicture');
                 res.json({
                     success: true,
-                    pictureName: results.rows[0].picture_name
+                    picturename: results.rows[0].picture_name
                 })
             })
         }).catch(err => res.json({success: false}));
@@ -547,6 +547,14 @@ app.get('/getUser', (req, res) => {
     })
 })
 
+app.post('/post-chat-message', (req, res) => {
+    console.log(req.body.chatmessage);
+
+    chatMessage = req.body.chatmessage;
+
+
+})
+
 //SOCKET IO
 
 let arrayOfOnlineUsers = []
@@ -566,10 +574,30 @@ app.get('/connect/:socketId', (req, res) => {
         let newUser = req.session.user
 
         io.sockets.emit('userJoined', newUser)
+
+        const qRetrieveLastMessages = `
+        SELECT chat.id as message_id, chat.message, chat.created_at AS created_at, users.id AS sender_id, users.firstname AS sender_firstname, users.lastname AS sender_lastname, users.picture_name AS sender_picture
+        FROM chat
+        JOIN users
+        ON chat.sender_id = users.id
+        ORDER BY chat.created_at DESC
+        LIMIT 10
+        `
+
+        db.query(qRetrieveLastMessages).
+        then((results) => {
+            let lastMessages = results.rows
+
+            lastMessages.sort(function(a,b) {
+                return new Date(a.created_at) - new Date(b.created_at)
+            })
+            console.log(lastMessages);
+            io.sockets.sockets[socketId].emit('chatMessages', lastMessages)
+        }).catch(err => console.log('error at query get last messages from db', err))
     }
 
     const qFindAllUsersById = `
-        SELECT id, firstname AS firstName, lastname AS lastName, email, bio, picture_name AS pictureName
+        SELECT id, firstname, lastname, email, bio, picture_name AS picture
         FROM users
         WHERE id = ANY($1)`
 
@@ -594,24 +622,63 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`user with socket id ${socket.id} is now disconnected`);
 
-        const disconnectedSocket = arrayOfOnlineUsers.filter(user => user.socketId === socket.id)[0];
+        const disconnectedSocket = arrayOfOnlineUsers.find(user => user.socketId === socket.id);
 
         const userIndexInArray = arrayOfOnlineUsers.indexOf(disconnectedSocket);
 
         arrayOfOnlineUsers.splice(userIndexInArray, 1);
 
         var anotherConnection = () => {
-            arrayOfOnlineUsers.find((user) =>{
+            return arrayOfOnlineUsers.find((user) =>{
                 return user.userId == disconnectedSocket.userId;
             })
         }
+        console.log('disconnectedSocket is: ',disconnectedSocket);
 
-        if(anotherConnection >= 1) {
-            anotherConnection()
-        } else {
+        if(!anotherConnection()) {
             io.sockets.emit('userLeft', { id: disconnectedSocket.userId });
         }
+    })
 
+    socket.on('new-chat-message', (newChatMessageObj) => {
+
+        let messageSender = arrayOfOnlineUsers.find((user) => user.socketId == socket.id)
+
+        const qStoreNewMessage = `
+            INSERT INTO chat (sender_id, message)
+            VALUES ($1, $2)
+            RETURNING created_at, id AS message_id`
+        const params = [messageSender.userId, newChatMessageObj.newMessage]
+        db.query(qStoreNewMessage, params)
+        .then((results) => {
+            console.log('returning info from query result at storing new message is: ', results.rows);
+            let createdAt = results.rows[0].created_at
+            let message_id = results.rows[0].message_id
+
+            const qGetSenderInfo = `
+            SELECT firstname, lastname, picture_name
+            FROM users
+            WHERE id = $1`
+
+            const params = [messageSender.userId]
+
+            db.query(qGetSenderInfo, params)
+            .then((results) => {
+                let senderInfo = results.rows[0]
+                console.log('sender info of new message is: ', senderInfo);
+                newMessage = {
+                    message_id: newChatMessageObj.sender_id,
+                    message: newChatMessageObj.newMessage,
+                    created_at: createdAt,
+                    sender_id: messageSender.userId,
+                    sender_firstname: senderInfo.firstname,
+                    sender_lastname: senderInfo.lastname,
+                    sender_picture: senderInfo.picture_name
+                }
+                console.log('new message before broadcasting contains of: ', newMessage);
+                io.sockets.emit('broadcast-new-message', newMessage);
+            }).catch(err => console.log('error at query get sender info', err))
+        }).catch(err => console.log('error at query store new message', err))
     })
 })
 

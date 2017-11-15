@@ -24,10 +24,10 @@ export default class OtherUserProfile extends React.Component {
         .then(({data}) => {
             this.setState({
                 userId: data.otherUser.id,
-                firstName: data.otherUser.firstname,
-                lastName: data.otherUser.lastname,
+                firstname: data.otherUser.firstname,
+                lastname: data.otherUser.lastname,
                 email: data.otherUser.email,
-                pictureName: data.otherUser.picture_name,
+                picturename: data.otherUser.picture_name,
                 bio: data.otherUser.bio
 
             })
@@ -38,9 +38,9 @@ export default class OtherUserProfile extends React.Component {
     render(props) {
         return(
             <div id="other-user-profile">
-                <h1>{this.state.firstName} {this.state.lastName}</h1>
+                <h1>{this.state.firstname} {this.state.lastname}</h1>
                 <h2>My email is: {this.state.email}</h2>
-                <img src={`https://s3.amazonaws.com/raulsbucket2/${this.state.pictureName}`}/>
+                <img src={`https://s3.amazonaws.com/raulsbucket2/${this.state.picturename}`}/>
                 <FriendshipButton otherUserId={this.props.params.id} />
             </div>
         )

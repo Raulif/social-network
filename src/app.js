@@ -1,16 +1,16 @@
 import React from 'react';
 import axios from 'axios';
 import ProfilePicture from './profile-picture';
-import {socket} from './socket';
-import { connect } from 'react-redux'
-
+import { socket } from './socket';
+import { connect } from 'react-redux';
 import { Link } from 'react-router';
+
 
 class App extends React.Component {
     constructor(props) {
         super(props),
         this.state = {}
-        socket();
+        this.socket = socket();
     }
 
     componentDidMount() {
@@ -19,28 +19,30 @@ class App extends React.Component {
             let user = queryResponse.data.user;
             this.setState({
                 userId: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
+                firstname: user.firstname,
+                lastname: user.lastname,
                 email: user.email
 
             })
         }).catch(err => console.log("THERE WAS AN ERROR IN /app",err));
     }
 
+
     render() {
         const clonedChildren = React.cloneElement(
             this.props.children,
             {
                 userId: this.state.userId,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName
+                firstname: this.state.firstname,
+                lastname: this.state.lastname,
+                emit: (e, payload) => this.socket.emit(e, payload)
             }
         )
         return (
             <div>
                 <div id="topBar">
                     <Link to="/" id="home-link"></Link>
-                    <ProfilePicture userId={this.state.userId} alt={`${this.state.firstName}-${this.state.lastName}`} />
+                    <ProfilePicture userId={this.state.userId} alt={`${this.state.firstname}-${this.state.lastname}`} />
                 </div>
                 {clonedChildren}
 
