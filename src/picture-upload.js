@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import {Button} from './reusables'
+import {Button, UploaderDiv} from './reusables'
 
 export default class PictureUpload extends React.Component {
     constructor(props){
@@ -9,25 +9,22 @@ export default class PictureUpload extends React.Component {
     }
 
     inputHandler(e) {
-        console.log(e.target.files[0]);
         this.setState({ pictureFile: e.target.files[0]})
     }
 
     submit() {
         var formData = new FormData();
         formData.append('file', this.state.pictureFile);
-        console.log(formData);
         axios.post('/uploadPicture', formData )
         .then(({data}) => {
+            console.log('formData: ', formData);
+
             if(data.success) {
+                console.log('data on picture-upload: ', data);
                 this.props.updateImage(data.picturename)
             }
         })
         .catch(err => console.log("THERE WAS AN ERROR IN /newuser", err));
-    }
-
-    componentDidMount() {
-        console.log('in pictureUpload');
     }
 
     render(props) {
@@ -36,18 +33,15 @@ export default class PictureUpload extends React.Component {
             return null
         } else {
             return (
-                <div >
-                    <label htmlFor="file">Upload Picture</label>
-                    <input type="file" id="file" onChange={e => this.inputHandler(e)}/>
-                    <Button type="submit" id="uploadbutton" name="button" onClick={() => this.submit() } >Upload!</Button>
+                <div>
+                    <UploaderDiv>
+                        <label className='upload-label' htmlFor="file">Upload a new picture:</label>
+                        <input className='file-field' type='file'/>
+                        <input className='hidden-field' type="file" id="file" onChange={e => this.inputHandler(e)}/>
+                        <button type="submit" className='upload-button' id="upload-button" name="button" onClick={() => this.submit() } >Upload!</button>
+                    </UploaderDiv>
                 </div>
             )
         }
     }
 }
-
-
-//do ajax request in this Component
-/*
-this compnent needs to be passed a function to update the image when new image is uploaded.
-*/

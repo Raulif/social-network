@@ -32,7 +32,6 @@ export default class EditableBio extends React.Component {
         console.log(userBio);
         axios.post('/updateUserBio', userBio)
         .then(({data}) => {
-            console.log('return data from query on front end: ',data.bio);
             if(data.success) {
                 this.setState({ bioEditorVisible: false })
             }

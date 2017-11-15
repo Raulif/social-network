@@ -46,7 +46,7 @@ class ChatRoom extends React.Component {
                     <ChatMessage user={this.props.user} messages={this.props.messages} />
                 </div>
                 <div  id="chat-message-input">
-                    <p for="chat-input-textarea">Say something:</p>
+                    <p for="chat-input-textarea">Say something nice:</p>
                     <textarea ref="textarea" id="chat-input-textarea" type="text" onChange={e => this.inputHandler(e)} onKeyDown={(e) => this.keyDownHandler(e)}></textarea>
                     <Button id="chat-button" onClick={() => this.submit()} className="secondary-button">Send</Button>
                 </div>

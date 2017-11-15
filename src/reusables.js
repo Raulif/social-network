@@ -27,3 +27,19 @@ export const Button = styled.button`
     color: white;
     font-size: 40px;
 `
+
+export const UploaderDiv = styled.div`
+    width: 100%;
+    height: 450px;
+    position: absolute;
+    margin-top: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-color: rgba(55, 23, 88, 0.9);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0px 2px 3px 3px black;
+
+`

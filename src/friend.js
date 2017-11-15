@@ -5,7 +5,7 @@ export default function Friend({friend, requester, endFriendship, acceptFriendsh
     const user = friend || requester
     console.log('inside a friend');
     return (
-        <div className="user">
+        <div className="friend-profile">
             <img src={`https://s3.amazonaws.com/raulsbucket2/${user.picture_name}`} />
             <h2>{user.firstname} {user.lastname}</h2>
             {friend && <Button onClick={() => endFriendship(friend)}>End Friendship</Button>}

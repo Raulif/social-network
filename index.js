@@ -483,15 +483,16 @@ app.post('/uploadPicture', uploader.single('file'), (req, res) => {
                 RETURNING picture_name`;
 
             const params = [req.file.filename, req.session.user.id]
-
-            return db.query(qInsertPictureName, params)
+            console.log('req.session.user', req.session.user);
+            console.log('params are: ', params);
+            db.query(qInsertPictureName, params)
             .then((results) => {
-                console.log('success in queryUploadPicture');
+                console.log('success in queryUploadPicture', results);
                 res.json({
                     success: true,
                     picturename: results.rows[0].picture_name
                 })
-            })
+            }).catch(err => res.json({success: false}));
         }).catch(err => res.json({success: false}));
     } else {
         res.json({success: false})
@@ -541,9 +542,31 @@ app.get('/getUserBio', (req, res) => {
 })
 
 app.get('/getUser', (req, res) => {
-    res.send({
-        success: true,
-        user: req.session.user
+    console.log('user at getUser', req.session.user);
+
+    const qGetFUllUserInfo = `
+        SELECT *
+        FROM users
+        WHERE email = $1`
+
+    const params = [req.session.user.email]
+
+    db.query(qGetFUllUserInfo, params)
+    .then((results) => {
+        userInfo = results.rows[0]
+        console.log(userInfo);
+        req.session.user = {
+            id: userInfo.id,
+            firstname: userInfo.firstname,
+            lastname: userInfo.lastname,
+            email: userInfo.email,
+            picturename: userInfo.picture_name,
+            bio: userInfo.bio && userInfo.bio
+        }
+        res.send({
+            success: true,
+            user: req.session.user
+        })
     })
 })
 
@@ -591,13 +614,12 @@ app.get('/connect/:socketId', (req, res) => {
             lastMessages.sort(function(a,b) {
                 return new Date(a.created_at) - new Date(b.created_at)
             })
-            console.log(lastMessages);
             io.sockets.sockets[socketId].emit('chatMessages', lastMessages)
         }).catch(err => console.log('error at query get last messages from db', err))
     }
 
     const qFindAllUsersById = `
-        SELECT id, firstname, lastname, email, bio, picture_name AS picture
+        SELECT id, firstname, lastname, email, bio, picture_name AS picturename
         FROM users
         WHERE id = ANY($1)`
 
