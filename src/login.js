@@ -39,7 +39,7 @@ export default class Login extends React.Component {
 
         return (
             <div className="welcome-bottom-container">
-                {this.state.error && <div className="warning">Error trying to login</div>}
+                {!this.state.error ? <div className="filler"/> : <div className="warning">Uh oh, that FAILED</div> }
                 <Input type="text" name="email" onChange={e => this.inputHandler(e)} placeholder="email"/>
                 <Input type="password" name="password" onChange={e => this.inputHandler(e)} placeholder="password"/>
                 <Button onClick={ () => this.submit() }>Login!</Button>

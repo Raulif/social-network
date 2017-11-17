@@ -2,7 +2,6 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #F3C6DA;
 }
 
 #welcome-top-container {
@@ -19,10 +18,32 @@ body {
     background-color: white;
 }
 
+#welcome-top-container h1 {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arima Madurai', cursive;
+    font-size: 60px;
+    font-weight: 100;
+}
+
+.boheme-keyword {
+    font-family: 'Parisienne', cursive;
+    font-size: 60px;
+}
+
+#welcome-top-container h2 {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 1vh;
+    font-family: 'Arima Madurai', cursive;
+    font-size: 40px;
+    font-weight: 400;
+}
+
 #welcome-top-container #logo {
     width: 90%;
-    margin-top: 50px;
-    margin-bottom: 100px;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
 }
 
 .welcome-bottom-container {
@@ -40,14 +61,14 @@ body {
     font-size: 50px;
     text-decoration: none;
     color: #a51e72;
+    font-family: 'Arima Madurai', cursive;
 
 }
-
-.filler {
+.filler {
     height: 80px;
     font-size: 80px;
     width: 100%;
-    background-color: red;
+    background-color: transparent;
 }
 
 .warning {
@@ -70,13 +91,21 @@ body {
     border-radius: 6px;
     padding-top: 10px;
     text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+
 }
 
+.welcome-bottom-container Button{
+    border-bottom: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 100;
+    font-size: 50px;
+}
 
 #topBar {
     top: 0;
     width: 100%;
-    height: 110px;
+    height: 6.5vh;
     border-bottom: 1px solid #a51e72;
     text-align: center;
     box-shadow: 0px 2px 4px #a51e72;
@@ -98,7 +127,6 @@ body {
     z-index: 15;
 }
 
-
 #topBar #profile-picture {
     height: 95px;
     width: 95px;
@@ -112,42 +140,34 @@ body {
     z-index: 15;
 }
 
-
-#profile-container {
-    width: 100%;
-    height: auto;
-    padding-top: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;        border-bottom: 1px solid #a51e72;
-    box-shadow: 0px 2px 3px 3px #a51e72;
-    padding-bottom: 40px;
-
-}
-
 .upload-label {
     color: white;
     font-size: 50px;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
 }
 
 .file-field {
-    color: white;
+    color: #a51e72;
     font-size: 45px;
     position: absolute;
     background-color: white;
-    width: 30%;
+    width: 60%;
+    border-radius: 10px;
 }
 
 .upload-button {
     height: 80px;;
     width: 30%;
     border: none;
-    border-bottom: 5px solid #e683af;
     border-radius: 9px;
     background-color: #a51e72;
     color: white;
     font-size: 40px;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
+    box-shadow: 3px 3px 2px #000;
+    padding-top: 5px;
 }
 
 .hidden-field {
@@ -156,27 +176,134 @@ body {
     opacity: 0;
 }
 
+#menu-toggler {
+    position: relative;
+    float: right;
+    top: 7px;
+    right: 120px;
+    height: 95px;
+    width: 95px;
+    background-color: #a51e72;
+    border-radius: 10px;
+    z-index: 100;
+}
+
+#menu-toggler i{
+    padding-top: 20px;
+    color: white;
+    font-size: 60px;
+}
+
+
+#link-container {
+    width: 100%;
+    height: 5vh;
+    color: white;
+    display: absolute;
+    z-index: 100;
+}
+
+#link-container
+.hide-menu{
+    transition-duration: 0.3s;
+    transition-property: transform;
+    transform: translateY(-100%);
+}
+
+#link-container .show-menu {
+    transition-duration: 0.5s;
+    transition-property: transform;
+    transform: translateY(0%);
+    box-shadow: 0px 2px 2px #343434;
+
+}
+
+.link-subcontainer {
+    display: flex;
+    height: 6vh;
+}
+
+#link-container .whos-online {
+    width: 25%;
+    background-color: #8bc3d6;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#link-container .chat-link {
+    width: 25%;
+    background-color: #e683af;
+    text-decoration: none;
+    border-left: 1px solid white;
+}
+
+#link-container .all-users-link {
+    width: 50%;
+    background-color: #371758;
+    text-decoration: none;
+    border-left: 1px solid white;
+}
+
+#link-container p {
+    margin: 0;
+    padding: 0;
+    margin-left: 40px;
+    width: 150px;
+    height: 100%;
+    color: white;
+    font-size: 25px;
+    display: flex;
+    text-align: center;
+    justify-content: space-around;
+    align-items: center;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 400;
+}
+
+#link-container i {
+    font-size: 40px;
+}
+
+#link-container .link-mini-b {
+    font-family: 'Parisienne', cursive;
+    font-size: 40px;
+}
+
+#profile-container {
+    margin: 0%;
+    margin-top: 3vh;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    position: relative;
+}
+
+#profile-container #profile-picture {
+    margin-left: 30vw;
+    width: 40vw;
+    height: auto;
+    border: 3px solid #018fa5;
+    box-shadow: 2px 2px 2px #343434;
+
+}
+
 .user-name {
     font-family: 'Parisienne', cursive;
     width: 100%;
     font-size: 100px;
     margin: 0;
     padding: 0;
-    margin-top: 10px;
-    margin-bottom: 50px;
+    margin-top: 1vh;
+    margin-bottom: 5vh;
     text-align: center;
-}
-
-#profile-container #profile-picture {
-    width: 30vw;
-    height: auto;
-    border: 3px solid #018fa5;
+    text-shadow: 2px 2px 2px #343434;
 }
 
 #bio-container {
     width: 70%;
+    margin-left: 15%;
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 15vh;
 }
 
 #bio-editor {
@@ -184,11 +311,12 @@ body {
     padding: 0;
     width: 100%;
     border: 3px dotted #018fa5;
-    height: 100px;
-    font-size: 20px;
-    word-wrap: break-word;
-    word-break: break-all;
+    font-size: 40px;
     background-color: #E5F3F5;
+    font-family: 'Arima Madurai', cursive;
+    height: auto;
+    min-height: 100px;
+    max-height: 200px;
 }
 
 #bio-container p {
@@ -196,12 +324,14 @@ body {
     padding: 0;
 }
 
-#bio-container .label {
-    width: 100%;
+#bio-container .bio-label {
+    width: 80%;
     text-align: left;
     font-size: 30px;
-    color:;
-    margin-left: 10px;
+    color: #a51e72;
+    margin-bottom: 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 300;
 }
 
 #bio-container .secondary-button {
@@ -209,6 +339,8 @@ body {
     border-bottom: 0px;
     padding: 0;
     margin-top: 5px;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
 }
 
 #bio-text {
@@ -219,75 +351,285 @@ body {
     width: 100%;
     border-top: 3px dotted #018fa5;
     border-bottom: 3px dotted #018fa5;
+    font-family: 'Arima Madurai', cursive;
 }
 
 #bio-container .bio-editor-toggler {
-    margin-left: 33%;
-    width: 33%;
+    margin-left: 35%;
+    width: 30%;
     font-size: 40px;
     color: white;
     background-color: #018fa5;
     border-radius: 8px;
     margin-top: 10px;
-}
-
-
-#profile-container .profile-link {
-    font-size: 40px;
-    width: 100%;
-    text-align: center;
-}
-
-#other-user-profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 50vh;
-    background-color: #E5F3F5;
-    border-bottom: 3px solid #018fa5;
-    box-shadow: 0px 2px 3px 3px #018fa5;
-}
-
-
-
-#friendship-button #update-friendship {
-    width: 200px;
-    height: 100px;
-    background: blue;
-    color: white;
-    font-size: 20px;
-}
-
-#friendship-button #reject-friendship {
-    width: 200px;
-    height: 100px;
-    background: red;
-    color: white;
-    font-size: 20px;
+    padding-top: 5px;
+    font-weight: 100;
+    font-family: 'Arima Madurai', cursive;
 }
 
 #friends {
-    background-color: #E5F3F5;
     padding: 0;
     margin: 0;
-}
-
-#friends h1 {
-    padding: 0;
-    margin: 0;
-}
-
-
-
-.friends-container {
     width: 100%;
+    position: absolute;
+    top: 75vh;
+    font-weight: bold;
 }
 
-.requester {
-    border-bottom: 2px solid blue;
+.pending-friendships-title h1 {
+    padding: 0;
+    margin: 0;
+    height: 4vh;
+    width: 100%;
+    font-size: 40px;
+    background-color: #a51e72;
+    color: white;
+    padding-top: 1vh;
+    text-indent: 10%;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
 }
 
-.accepted {
+.pending-friendships-title i {
+    float: right;
+    margin-right: 40px;
+    margin-top: 10px;
+}
+
+.hidePending{
+    display: none;
+}
+
+.showPending {
+    max-height: auto;
+    background-color: #F3C6DA;
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.friend-profile {
+    display: inline;
+    width: 45%;
+    height: 450px;
+    border: 4px solid #8bc3d6;
+    border-radius: 8px;
+    margin-bottom: 100px;
+    background-color: white;
+    box-shadow: 2px 2px 3px #a51e72;
+}
+
+.friend-img-container {
+    margin-top: 5%;
+    margin-left: 5%;
+    width: 90%;
+    height: 50%;
+    background: white;
+}
+
+.friend-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #018fa5;
+}
+
+.friend-profile h3 {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    font-size: 50px;
+    font-family: 'Parisienne', cursive;
+    text-shadow: 1px 1px 1px #343434;
+}
+
+.friend-profile
+.friend-accept-button {
+    width: 70%;
+    height: 60px;
+    background-color: #018fa5;
+    margin-left: 15%;
+    margin-top: 30px;
+    font-size: 33px;
+    border-radius: 8px;
+}
+
+.friend-profile
+.friend-end-button {
+    width: 70%;
+    height: 60px;
+    background-color: #DA3E52;
+    margin-left: 15%;
+    margin-top: 30px;
+    font-size: 33px;
+    border-radius: 8px;
+}
+
+.hideFriends{
+    transition: height 2s;
+    max-height: 0;
+    width: 100%;
+    display: none;
+}
+
+.showFriends {
+    max-height: auto;
+    background-color: #E5F3F5;
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
+}
+
+.accepted-friendships-title h1 {
+    padding: 0;
+    margin: 0;
+    height: 5vh;
+    width: 100%;
+    font-size: 40px;
+    background-color: #018fa5;
+    color: white;
+    padding-top: 0.8vh;
+    text-indent: 10%;
+    background-color: #018fa5;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
+}
+
+.accepted-friendships-title i {
+    float: right;
+    margin-right: 40px;
+    margin-top: 5px;
+}
+
+
+#other-user-profile {
+    align-items: center;
+    height: 93vh;
+    background-color: white;
+    width: 100vw;
+}
+
+#other-user-img-container {
+    width: 100%;
+    height: 750px;
+    border-bottom: 5px solid #371758;
+}
+
+#other-user-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#other-user-profile h1 {
+    padding: 0;
+    margin: 0;
+    margin-top: 2vh;
+    width: 100%;
+    font-family: 'Parisienne', cursive;
+    text-shadow: 1px 1px 1px #343434;
+    font-size: 100px;
+    text-align: center;
+    margin-bottom: 2vh;
+}
+
+.other-user-tag-label {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    width: 30%;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 45px;
+    margin-left: 5%;
+    font-weight: 100;
+}
+
+#other-user-email {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    font-family: 'Arima Madurai', cursive;
+    font-size: 70px;
+    color: #371758;
+    margin-left: 2%;
+    font-weight: 100;
+    margin-bottom: 2vh;
+}
+
+.other-user-bio-label {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    width: 80%;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 45px;
+    margin-left: 5%;
+    font-weight: 100;
+}
+
+#other-user-bio{
+    margin: 0;
+    padding: 0;
+    margin-top: 1vh;
+    font-size: 40px;
+    font-family: 'Arima Madurai', cursive;
+    width: 80%;
+    padding-left: 2%;
+    margin-left: 10%;
+    text-align: center;
+    border-top: 3px dotted #018fa5;
+    border-bottom: 3px dotted #018fa5;
+    color: #371758;
+}
+
+#other-user-friendship-status {
+    position: absolute;
+    bottom: 5vh;
+    font-size: 45px;
+    margin-left: 5%;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 100;
+}
+
+#other-user-profile
+#friendship-button #update-friendship {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: 7vh;
+    background: #018fa5;
+    color: white;
+    font-size: 50px;
+    border-radius: 0;
+    bottom: 0;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
+
+}
+
+#other-user-profile
+#friendship-button #reject-friendship {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: 7vh;
+    background: #DA3E52;
+    color: white;
+    font-size: 50px;
+    border-radius: 0;
+    bottom: 0;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
 
 }
 
@@ -300,14 +642,22 @@ body {
     height: 94vh;
 }
 #chat-room h1{
-    margin: 0;
     padding: 0;
-    color: white;
-    height: 90px;
+    margin: 0;
+    height: 70px;
     width: 100%;
+    font-size: 50px;
     text-align: center;
-    padding-top: 10px;
-    font-size: 70px;
+    margin-top: 1px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #a51e72;
+    color: white;
+    box-shadow: 0px 2px 3px #343434;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
+    z-index: 10;
+    margin-bottom: 2vh;
 }
 
 
@@ -317,7 +667,7 @@ body {
     padding-top: 20px;
     margin-left: 5%;
     width: 90%;
-    height: 60vh;
+    height: 65vh;
     background-color: white;
     border: 3px solid #371758;
     border-radius: 8px;
@@ -348,6 +698,7 @@ body {
 
 .others-message:nth-child(even) .chat-text-content{
     background-color: #E5F3F5;
+    width: 95%;
 }
 
 .own-message {
@@ -361,7 +712,6 @@ body {
 
 .own-message .chat-text-content {
     background-color: #F3C6DA;
-
 }
 
 .others-message {
@@ -388,26 +738,28 @@ body {
 }
 
 .chat-nametags {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
+    font-family: 'Arima Madurai', cursive;
 }
 
 .chat-username {
     width: 60%;
     margin: 5px 0px 0px 10px;
     padding: 0;
-
+    font-size: 20px;
 }
 
 .chat-message-text {
     width: 90%;
     margin: 0px 0px 10px 20px;
-    font-size: 40px;
+    font-size: 35px;
+    font-family: 'Rajdhani', sans-serif;
 }
 #chat-message-input {
     margin: 0;
     padding: 0;
-    height: 25vh;
+    height: 15vh;
     width: 80%;
     margin-left: 10%;
     display: flex;
@@ -416,12 +768,14 @@ body {
     margin-top: 40px;
 }
 #chat-message-input p{
-    font-size: 20px;
+    font-size: 30px;
+    align-self: flex-end;
     margin: 0;
     padding: 0;
     margin-bottom: 20px;
-
+    font-family: 'Rajdhani', sans-serif;
 }
+
 #chat-input-textarea {
     height: 40%;
     width: auto;
@@ -437,10 +791,193 @@ body {
     margin: 0;
     padding: 0;
     margin-top: 30px;
-    height: 20%;
+    height: 30%;
     bottom: 0;
     display: block;
     font-size: 40px;
     background-color: #018fa5;
     border: 3px solid #8bc3d6;
 }
+
+.all-users {
+    margin: 0;
+    padding-top: 2vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    background-color: #F3C6DA;
+}
+
+#all-users-title {
+    padding: 0;
+    margin: 0;
+    height: 70px;
+    width: 100%;
+    font-size: 50px;
+    text-align: center;
+    margin-top: 1px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #371758;
+    color: white;
+    box-shadow: 0px 2px 3px #343434;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
+    z-index: 10;
+}
+
+.all-users-single-user {
+    display: inline;
+    width: 45%;
+    height: 500px;
+    border: 4px solid #8bc3d6;
+    border-radius: 8px;
+    margin-bottom: 100px;
+    background-color: white;
+    box-shadow: 2px 2px 3px #a51e72;
+    text-decoration: none;
+}
+
+.all-users-img-container {
+    margin-top: 5%;
+    margin-left: 5%;
+    width: 90%;
+    height: 50%;
+    background: white;
+
+}
+
+.all-users-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #018fa5;
+}
+
+.all-users-single-user h3 {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    font-size: 50px;
+    font-family: 'Parisienne', cursive;
+    text-shadow: 1px 1px 1px #343434;
+}
+
+.all-users-single-user #friendship-button {
+    padding-top: 5%;
+    display: flex;
+    justify-content: space-around;
+
+}
+
+#friendship-button
+#update-friendship {
+    width: 40%;
+    background-color: #018fa5;
+    font-size: 33px;
+    border-radius: 8px;
+}
+
+#friendship-button
+#reject-friendship{
+    background-color: #371758;
+    color: #EA95A0;
+    width: 40%;
+    border-radius: 8px;
+    font-size: 33px;
+}
+
+#online-users-title {
+    padding: 0;
+    margin: 0;
+    height: 70px;
+    width: 100%;
+    font-size: 50px;
+    text-align: center;
+    margin-top: 1px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #a51e72;
+    color: white;
+    box-shadow: 0px 2px 3px #343434;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
+    z-index: 10;
+}
+
+#no-users-online {
+    padding: 0;
+    margin: 0;
+    height: 70px;
+    width: 100%;
+    font-size: 50px;
+    text-align: center;
+    margin-top: 1px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #a51e72;
+    color: white;
+    box-shadow: 0px 2px 3px #343434;
+    font-family: 'Arima Madurai', cursive;
+    font-weight: 100;
+    z-index: 10;
+}
+
+#list-online-users {
+    margin: 0;
+    padding-top: 2vh;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    background-color: #E5F3F5;
+}
+
+.online-users-single-user {
+    display: inline;
+    width: 45%;
+    height: 425px;
+    border: 4px solid #018fa5;
+    border-radius: 8px;
+    margin-bottom: 100px;
+    background-color: white;
+    box-shadow: 2px 2px 3px #a51e72;
+}
+
+.online-users-img-container {
+    margin-top: 5%;
+    margin-left: 5%;
+    width: 90%;
+    height: 75%;
+    background: white;
+}
+
+.online-users-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #018fa5;
+}
+
+.online-users-single-user h3 {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    font-size: 50px;
+    font-family: 'Parisienne', cursive;
+    text-shadow: 1px 1px 1px #343434;
+}
+
+/*
+font-family: 'Rajdhani', sans-serif;
+font-family: 'Parisienne', cursive;
+font-family: 'Arima Madurai', cursive;
+*/

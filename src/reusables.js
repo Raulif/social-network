@@ -30,7 +30,7 @@ export const Button = styled.button`
 
 export const UploaderDiv = styled.div`
     width: 100%;
-    height: 450px;
+    height: 400px;
     position: absolute;
     margin-top: 110px;
     display: flex;
@@ -41,5 +41,4 @@ export const UploaderDiv = styled.div`
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     box-shadow: 0px 2px 3px 3px black;
-
 `

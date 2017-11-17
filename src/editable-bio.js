@@ -39,11 +39,12 @@ export default class EditableBio extends React.Component {
     }
 
     render() {
+        let elem;
         return(
             <div id="bio-container" >
                 {this.state.bio &&
-                    <div className="label" for="bio-editor">
-                        About me:
+                    <div className="bio-label" for="bio-editor">
+                        My bohemian thought of the day:
                     </div>
                 }
 
@@ -72,14 +73,20 @@ export default class EditableBio extends React.Component {
 
                 {(!this.state.bio &&
                     !this.state.bioEditorVisible) &&
+                    <div>
+                    <div className="bio-label" for="bio-editor">
+                        Enter your bohemian thought of the day:
+                    </div>
                     <p className="bio-editor-toggler" onClick={() => this.setState({bioEditorVisible: true})}>
-                        Create bio
+                        Enter thought
                     </p>
+
+                    </div>
                 }
 
                 {(this.state.bio && !this.state.bioEditorVisible) &&
                     <p className="bio-editor-toggler" onClick={() => this.setState({bioEditorVisible: true})}>
-                        Edit bio
+                        Edit
                     </p>
                 }
 

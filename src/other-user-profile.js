@@ -38,9 +38,16 @@ export default class OtherUserProfile extends React.Component {
     render(props) {
         return(
             <div id="other-user-profile">
-                <h1>{this.state.firstname} {this.state.lastname}</h1>
-                <h2>My email is: {this.state.email}</h2>
+            <div id="other-user-img-container">
                 <img src={`https://s3.amazonaws.com/raulsbucket2/${this.state.picturename}`}/>
+            </div>
+
+                <h1 id='other-user-name'>{this.state.firstname} {this.state.lastname}</h1>
+
+                <h2 className='other-user-tag-label'>My email is:</h2><h2 id='other-user-email'> {this.state.email}</h2>
+                <h2 className='other-user-bio-label'>My bohemian thought of the day is:</h2>
+                <p id='other-user-bio'>{this.state.bio}</p>
+                <p id='other-user-friendship-status'>Friendship status:</p>
                 <FriendshipButton otherUserId={this.props.params.id} />
             </div>
         )

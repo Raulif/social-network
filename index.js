@@ -39,6 +39,8 @@ var uploader = multer({
 app.use(compression());
 
 app.use('/public', express.static(`${__dirname}/public`))
+app.use('/node_modules/font-awesome', express.static(`${__dirname}/node_modules/font-awesome`))
+
 app.use(cookieSession({
     secret: 'a really hard to guess secret',
     maxAge: 1000 * 60 * 60 * 24 * 14
@@ -618,14 +620,14 @@ app.get('/connect/:socketId', (req, res) => {
         }).catch(err => console.log('error at query get last messages from db', err))
     }
 
-    const qFindAllUsersById = `
+    const qFindAllOnlineUsersById = `
         SELECT id, firstname, lastname, email, bio, picture_name AS picturename
         FROM users
         WHERE id = ANY($1)`
 
     const arrayOfUserIds = arrayOfOnlineUsers.map( user => user.userId )
 
-    db.query(qFindAllUsersById, [arrayOfUserIds])
+    db.query(qFindAllOnlineUsersById, [arrayOfUserIds])
     .then((queryResults) => {
         let onlineUsers = queryResults.rows
 
@@ -636,6 +638,18 @@ app.get('/connect/:socketId', (req, res) => {
             user: req.session.user
         })
     }).catch(err => console.log("THERE WAS AN ERROR IN /get all users by id",err));
+
+    const qGetAllUsersFromDb = `
+    SELECT id, firstname, lastname, picture_name AS picturename
+    FROM users`
+
+    db.query(qGetAllUsersFromDb)
+    .then(results => {
+        let allUsers = results.rows
+        console.log(allUsers);
+
+        io.sockets.sockets[socketId].emit('allUsers', allUsers)
+    })
 })
 
 io.on('connection', (socket) => {

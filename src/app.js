@@ -10,10 +10,15 @@ import { Link } from 'react-router';
 class App extends React.Component {
     constructor(props) {
         super(props),
-        this.state = {pictureUploadVisible: false}
+        this.state = {
+            pictureUploadVisible: false,
+            showMenu: false
+        }
         this.socket = socket();
         this.changeHandler = this.changeHandler.bind(this)
         this.showUploader = this.showUploader.bind(this)
+        this.menuToggler = this.menuToggler.bind(this);
+
     }
 
     componentDidMount() {
@@ -49,6 +54,17 @@ class App extends React.Component {
        })
     }
 
+
+    menuToggler() {
+        if(this.state.showMenu) {
+            this.setState({showMenu: false})
+        }
+        else {
+            this.setState({showMenu: true})
+
+        }
+    }
+
     showUploader(visible) {
         this.setState({
             pictureUploadVisible: visible
@@ -56,6 +72,7 @@ class App extends React.Component {
     }
 
     render() {
+
         const clonedChildren = React.cloneElement(
             this.props.children,
             {
@@ -63,7 +80,8 @@ class App extends React.Component {
                 firstname: this.state.firstname,
                 lastname: this.state.lastname,
                 emit: (e, payload) => this.socket.emit(e, payload),
-                picturename: this.state.picturename
+                picturename: this.state.picturename,
+                showMenu: this.state.showMenu
             }
         )
         if(this.props) {
@@ -76,6 +94,10 @@ class App extends React.Component {
                         userId={this.state.userId}
                         picturename={this.state.picturename} alt={`${this.state.firstname}-${this.state.lastname}`} showUploader={this.showUploader}
                         uploaderVisible={this.state.pictureUploadVisible} />
+
+                        <div id='menu-toggler' >
+                            <i onClick={() => this.menuToggler()} className="fa fa-bars" aria-hidden="true"></i>
+                        </div>
 
                         {this.state.pictureUploadVisible &&
                         <PictureUpload

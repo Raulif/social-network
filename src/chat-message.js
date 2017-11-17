@@ -25,8 +25,6 @@ export default function ChatMessage(props) {
                 }
             }
 
-
-
             return(
                 <div className={props.user && applyClass(props.user.id)} key={message_id} >
                     <img className="chat-img" src={`${pictureUrlPrefix}${picturename}`}/>

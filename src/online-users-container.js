@@ -11,12 +11,11 @@ class OnlineUsersContainer extends React.Component {
         const { onlineUsers, user } = this.props;
         if(onlineUsers.length == 0) {
             return(
-                <div>Currently no users online</div>
+                <div id="no-users-online">Currently no users online</div>
             )
         }
         return(
             <div>
-                <h1>Following users are currently online</h1>
                 {onlineUsers && <OnlineUsers onlineUsers={onlineUsers} />}
             </div>
         )

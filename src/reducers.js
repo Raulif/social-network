@@ -74,5 +74,12 @@ export default function(state = {}, action) {
         })
     }
 
+    if(action.type == 'GET_ALL_USERS') {
+        console.log('all users received by reducer: ', action.allUsers);
+        state = Object.assign({}, state, {
+            allUsers: action.allUsers
+        })
+    }
+
     return state;
 }

@@ -12,9 +12,9 @@ export default class Welcome extends React.Component {
             <div>
                 <div id="welcome-top-container">
                     <Logo />
-                    <h1>The social network for tue bohemians</h1>
+                    <h1>The social network for Bohemians</h1>
 
-                    <h2>Join Bohême now!</h2>
+                    <h2>Join <span className="boheme-keyword">Bohême</span> now!</h2>
                 </div>
                 <div>
                     {this.props.children}

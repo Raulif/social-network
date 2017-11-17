@@ -40,10 +40,13 @@ export default class FriendshipButton extends React.Component {
 
     render(props) {
         let nextAction = this.state.nextAction
+
+        let cancelRequest = this.state.nextAction == 'Cancel Request' ? 'cancel-request' : null;
+
         return(
             <div id='friendship-button' onChange={(e) => { console.log('there was a change in friendship : ', e)}}>
 
-                {this.state.nextAction && <button id="update-friendship" onClick={this.clickHandler}>{nextAction}</button>}
+                {this.state.nextAction && <button className={cancelRequest} id="update-friendship" onClick={this.clickHandler}>{nextAction}</button>}
 
                 {!this.state.nextAction && <button id="create-friendship" onClick={this.clickHandler}>{nextAction}</button>}
 

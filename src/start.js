@@ -6,17 +6,18 @@ import Register from './register';
 import Login from './login';
 import App from './app';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware } from 'redux';
 import Profile from './profile';
 import OtherUserProfile from './other-user-profile';
-import reducer from './reducers'
+import reducer from './reducers';
 import reduxPromise from 'redux-promise';
-import FriendsContainer from './friends-container'
-import Friend from './friend'
+import FriendsContainer from './friends-container';
+import Friend from './friend';
 import * as io from 'socket.io-client';
-import OnlineUsersContainer from './online-users-container'
-import ChatRoom from './chat-room'
+import OnlineUsersContainer from './online-users-container';
+import ChatRoom from './chat-room';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import AllUsersContainer from './all-users-container';
 
 
 export const store = createStore(reducer, composeWithDevTools(applyMiddleware(reduxPromise)));
@@ -40,6 +41,7 @@ const loggedInRouter = (
                 <Route path="/friends" component={FriendsContainer} />
                 <Route path="/online-users" component={OnlineUsersContainer} />
                 <Route path="/chat" component={ChatRoom} />
+                <Route path="/all-users" components={AllUsersContainer} />
             </Route>
         </Router>
     </Provider>

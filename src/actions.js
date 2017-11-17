@@ -72,3 +72,10 @@ export function incomingMessage(message) {
         message
     }
 }
+
+export function getAllUsersFromDb(allUsers) {
+    return{
+        type: 'GET_ALL_USERS',
+        allUsers
+    }
+}
