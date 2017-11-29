@@ -12,7 +12,7 @@ export default class EditableBio extends React.Component {
 
     componentDidMount() {
         //on mount we get the current user bio from db
-        axios.get('/getUserBio')
+        axios.get('/get-user-bio')
 
             .then(({data}) => {
 
