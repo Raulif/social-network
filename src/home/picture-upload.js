@@ -17,7 +17,7 @@ export default class PictureUpload extends React.Component {
 
         var formData = new FormData();
         formData.append('file', this.state.pictureFile);
-        axios.post('/uploadPicture', formData )
+        axios.post('/upload-picture', formData )
 
             .then(({data}) => {
                 console.log('formData: ', formData);

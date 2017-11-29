@@ -26,7 +26,7 @@ export default class Register extends React.Component {
             this.setState({error: true})
         }
 
-        axios.post('/newuser', {
+        axios.post('/new-user', {
             //the user input is sent to the server for storing on the DB
             firstname: this.firstname,
             lastname: this.lastname,

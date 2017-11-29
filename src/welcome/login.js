@@ -21,7 +21,7 @@ export default class Login extends React.Component {
             this.setState({ error: true })
         }
         //Post email and password to server for auth.
-        axios.post('/attemptlogin', {
+        axios.post('/attempt-login', {
             email: this.email,
             password: this.password
         })

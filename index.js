@@ -16,6 +16,7 @@ const multer = require('multer')
 const path = require('path')
 const uidSafe = require('uid-safe')
 
+
 // -------------------------- MIDDLEWARE ------------------------------------ //
 
 // MULTER
@@ -341,7 +342,7 @@ app.get('/welcome', function(req, res){
     }
 });
 
-app.post('/newuser', (req, res) => {
+app.post('/new-user', (req, res) => {
 
     if(!req.body.firstname || !req.body.lastname || !req.body.email || !req.body.password) {
 
@@ -379,7 +380,7 @@ app.post('/newuser', (req, res) => {
     .catch(err => console.log('error on // INDEX // HASH PASSWORD: ' ,err));
 })
 
-app.post('/attemptlogin', (req, res) => {
+app.post('/attempt-login', (req, res) => {
 
     if(!req.body.email || !req.body.password) {
         res.json({success: false})
@@ -417,7 +418,7 @@ app.post('/attemptlogin', (req, res) => {
         })
 })
 
-app.get('/getProfilePicture', (req, res) => {
+app.get('/get-profile-picture', (req, res) => {
 
     const userId = req.session.user.id;
 
@@ -440,7 +441,7 @@ app.get('/getProfilePicture', (req, res) => {
 })
 
 
-app.post('/uploadPicture', uploader.single('file'), (req, res) => {
+app.post('/upload-picture', uploader.single('file'), (req, res) => {
 
     if(req.file) {
         toS3(req.file)
@@ -473,7 +474,7 @@ app.post('/uploadPicture', uploader.single('file'), (req, res) => {
     }
 })
 
-app.post('/updateUserBio', (req, res) => {
+app.post('/update-user-bio', (req, res) => {
 
     const userBio = req.body.bio
     const userId = req.session.user.id
@@ -489,7 +490,7 @@ app.post('/updateUserBio', (req, res) => {
         .catch(err => console.log('error on // INDEX // POST UPDATE USER BIO: ',err));
 })
 
-app.get('/getUserBio', (req, res) => {
+app.get('/get-user-bio', (req, res) => {
 
     if(req.session.user.bio) {
 
@@ -522,7 +523,7 @@ app.get('/getUserBio', (req, res) => {
 })
 
 
-app.get('/getUser', (req, res) => {
+app.get('/get-user', (req, res) => {
 
     const email = req.session.user.email
 

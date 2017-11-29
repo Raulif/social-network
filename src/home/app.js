@@ -25,7 +25,7 @@ class App extends React.Component {
 
     componentDidMount() {
         //on mount we retrieve the information of the logged in user from the db
-        axios.get('/getUser')
+        axios.get('/get-user')
         .then(({data}) => {
             console.log('get user: ', data);
             let user = data.user;
@@ -37,7 +37,7 @@ class App extends React.Component {
                 email: user.email
             })
 
-            axios.get('/getProfilePicture')
+            axios.get('/get-profile-picture')
                 .then(({data}) => {
                     let picturename = data.picturename;
                     this.setState({picturename})
@@ -49,14 +49,14 @@ class App extends React.Component {
 
     changeHandler() {
 
-        axios.get('/getProfilePicture')
-        .then(({data}) => {
-            console.log('getProfilePicture result is: ', data);
-            let picturename = data.picturename;
-            this.setState({
-                picturename
-            })
-       })
+        axios.get('/get-profile-picture')
+
+            .then(({data}) => {
+                let picturename = data.picturename;
+                this.setState({
+                    picturename
+                })
+           })
     }
 
 

@@ -38,7 +38,7 @@ export default class EditableBio extends React.Component {
         visibility of the bio editor to false*/
         let userBio = {bio: this.state.bio}
 
-        axios.post('/updateUserBio', userBio)
+        axios.post('/update-user-bio', userBio)
 
             .then(({data}) => {
 
