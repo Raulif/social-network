@@ -7,13 +7,16 @@ class OnlineUsersContainer extends React.Component {
         super(props)
     }
 
-    render(props) {
+    render() {
+
         const { onlineUsers, user } = this.props;
-        if(onlineUsers.length == 0) {
+
+        if(!onlineUsers.length) {
             return(
                 <div id="no-users-online">Currently no users online</div>
             )
         }
+
         return(
             <div>
                 {onlineUsers && <OnlineUsers onlineUsers={onlineUsers} />}
@@ -23,12 +26,14 @@ class OnlineUsersContainer extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+
     let otherOnlineUsers
 
     if(!state.onlineUsers) {
         otherOnlineUsers = []
     }
     else {
+        //we filter the array of users sent to props, removing the current user.
         otherOnlineUsers = state.onlineUsers.filter((onlineUser) => onlineUser.id !== state.user.id)
     }
 

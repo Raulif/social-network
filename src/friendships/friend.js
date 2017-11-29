@@ -1,11 +1,13 @@
 import React from 'react';
-import {Button} from './reusables';
-import {Link } from 'react-router'
+import { Button } from '../../modules/reusables';
+import { Link } from 'react-router'
 
 
 export default function Friend({friend, requester, endFriendship, acceptFriendship}) {
+    /*We render the other users equally, wether they are friends of the user or
+    requesters of new friendship*/
     const user = friend || requester
-    console.log('inside a friend');
+
     return (
 
         <div className="friend-profile">

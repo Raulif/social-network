@@ -769,7 +769,7 @@ body {
 }
 #chat-message-input p{
     font-size: 30px;
-    align-self: flex-end;
+    align-self: flex-start;
     margin: 0;
     padding: 0;
     margin-bottom: 20px;
@@ -783,8 +783,10 @@ body {
     padding: 0;
     width: 100%;
     border: 3px solid #371758;
-    font-size: 15px;
-
+    font-size: 25px;
+    font-family: 'Rajdhani', sans-serif;
+    padding-left: 5px;
+    padding-top: 5px;
 }
 
 #chat-button {

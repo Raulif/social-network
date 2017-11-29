@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {Button} from './reusables';
+import { Button } from '../../modules/reusables';
 
 export default class EditableBio extends React.Component {
     constructor(props) {
@@ -11,35 +11,46 @@ export default class EditableBio extends React.Component {
     }
 
     componentDidMount() {
-        console.log('About to query for existing user bio');
+        //on mount we get the current user bio from db
         axios.get('/getUserBio')
-        .then(({data}) => {
-            if(!data.success) {
-                return;
-            } else {
-                let userBio = data.bio
-                this.setState({bio: userBio});
-            }
-        }).catch(err => console.log('Error retrieving user bio: ', err));
+
+            .then(({data}) => {
+
+                if(!data.success) {
+                    return;
+                }
+
+                else {
+                    let userBio = data.bio
+                    this.setState({bio: userBio});
+                }
+
+            }).catch(err => console.log('Error retrieving user bio: ', err));
     }
 
     inputHandler(e) {
+        //we update the content of bio to local state on each key stroke
         this.setState({ bio: e.target.value });
     }
 
     submit() {
+        /*on submit we send the current bio from local state to db and set the
+        visibility of the bio editor to false*/
         let userBio = {bio: this.state.bio}
-        console.log(userBio);
+
         axios.post('/updateUserBio', userBio)
-        .then(({data}) => {
-            if(data.success) {
-                this.setState({ bioEditorVisible: false })
-            }
-        }).catch(err => console.log('Error on submitting user bio: ', err));
+
+            .then(({data}) => {
+
+                if(data.success) {
+                    this.setState({ bioEditorVisible: false })
+                }
+
+            }).catch(err => console.log('Error on submitting user bio: ', err));
     }
 
     render() {
-        let elem;
+
         return(
             <div id="bio-container" >
                 {this.state.bio &&
@@ -74,13 +85,12 @@ export default class EditableBio extends React.Component {
                 {(!this.state.bio &&
                     !this.state.bioEditorVisible) &&
                     <div>
-                    <div className="bio-label" for="bio-editor">
-                        Enter your bohemian thought of the day:
-                    </div>
-                    <p className="bio-editor-toggler" onClick={() => this.setState({bioEditorVisible: true})}>
-                        Enter thought
-                    </p>
-
+                        <div className="bio-label" for="bio-editor">
+                            Enter your bohemian thought of the day:
+                        </div>
+                        <p className="bio-editor-toggler" onClick={() => this.setState({bioEditorVisible: true})}>
+                            Enter thought
+                        </p>
                     </div>
                 }
 

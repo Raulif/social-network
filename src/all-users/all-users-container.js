@@ -8,8 +8,10 @@ class AllUsersContainer extends React.Component {
         super(props);
     }
 
-    render(props) {
+    render() {
+
         let {allUsers} = this.props
+
         if(allUsers.length == 0) {
             return(
                 <div className='no-users-in-db'>
@@ -17,6 +19,7 @@ class AllUsersContainer extends React.Component {
                 </div>
             )
         }
+
         return(
             <div>
                 <AllUsers allUsers={allUsers} />
@@ -26,7 +29,8 @@ class AllUsersContainer extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-
+    /*We filter out the user whose #ID matches that of the logged in user.
+    We do not show the user among the list of users.*/
     let allUsers = !state.allUsers ? [] : state.allUsers.filter(user => user.id !== state.user.id)
 
     return({

@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import ProfilePicture from './profile-picture';
 import PictureUpload from './picture-upload'
-import { socket } from './socket';
+import { socket } from '../socket/socket';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
@@ -14,6 +14,8 @@ class App extends React.Component {
             pictureUploadVisible: false,
             showMenu: false
         }
+        /*on mount the function socket() generates a socket ID and socket connection
+        for the user*/
         this.socket = socket();
         this.changeHandler = this.changeHandler.bind(this)
         this.showUploader = this.showUploader.bind(this)
@@ -22,20 +24,23 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+        //on mount we retrieve the information of the logged in user from the db
         axios.get('/getUser')
         .then(({data}) => {
-            console.log('data at app did mount: ', data);
+            console.log('get user: ', data);
             let user = data.user;
+
             this.setState({
                 userId: user.id,
                 firstname: user.firstname,
                 lastname: user.lastname,
                 email: user.email
             })
+
             axios.get('/getProfilePicture')
-            .then(({data}) => {
-                let picturename = data.picturename;
-                this.setState({picturename})
+                .then(({data}) => {
+                    let picturename = data.picturename;
+                    this.setState({picturename})
 
            }).catch(err => console.log("THERE WAS AN ERROR IN /app get profile picture",err));
 
@@ -43,7 +48,7 @@ class App extends React.Component {
     }
 
     changeHandler() {
-        console.log('in changeHandler');
+
         axios.get('/getProfilePicture')
         .then(({data}) => {
             console.log('getProfilePicture result is: ', data);
@@ -66,12 +71,18 @@ class App extends React.Component {
     }
 
     showUploader(visible) {
+        /* The function showUploader is passed to the child component PictureUploader,
+        which will return the value of 'visible' as true when clicked upon.*/
         this.setState({
             pictureUploadVisible: visible
         })
     }
 
     render() {
+
+        if(!this.state) {
+            return null
+        }
 
         const clonedChildren = React.cloneElement(
             this.props.children,
@@ -81,38 +92,43 @@ class App extends React.Component {
                 lastname: this.state.lastname,
                 emit: (e, payload) => this.socket.emit(e, payload),
                 picturename: this.state.picturename,
-                showMenu: this.state.showMenu
+                showMenu: this.state.showMenu,
+                location: this.props.location
             }
         )
-        if(this.props) {
-            console.log(this.state);
-            return (
-                <div>
-                    <div id="topBar">
-                        <Link to="/" id="home-link"></Link>
-                        <ProfilePicture
+
+        return (
+            <div>
+                <div id="topBar">
+                    <Link to="/" id="home-link"></Link>
+                    <ProfilePicture
                         userId={this.state.userId}
-                        picturename={this.state.picturename} alt={`${this.state.firstname}-${this.state.lastname}`} showUploader={this.showUploader}
+                        picturename={this.state.picturename}
+                        alt={`${this.state.firstname}-${this.state.lastname}`}
+                        showUploader={this.showUploader}
                         uploaderVisible={this.state.pictureUploadVisible} />
 
-                        <div id='menu-toggler' >
-                            <i onClick={() => this.menuToggler()} className="fa fa-bars" aria-hidden="true"></i>
-                        </div>
-
-                        {this.state.pictureUploadVisible &&
-                        <PictureUpload
-                        className='picture-uploader'
-                        updateImage = {newPictureName => {
-                            this.setState({
-                                picturename: newPictureName,
-                                pictureUploadVisible: false})}}
-                        onChange={()=> this.changeHandler()}
-                        />}
+                    <div id='menu-toggler' >
+                        <i  onClick={() => this.menuToggler()}
+                            className="fa fa-bars"
+                            aria-hidden="true">
+                        </i>
                     </div>
-                        {clonedChildren}
+
+                    {this.state.pictureUploadVisible &&
+                        <PictureUpload
+                            className='picture-uploader'
+                            updateImage = {newPictureName => {
+                                this.setState({
+                                    picturename: newPictureName,
+                                    pictureUploadVisible: false
+                                })}}
+                            onChange={()=> this.changeHandler()}
+                        />}
                 </div>
-            )
-        }
+                    {clonedChildren}
+            </div>
+        )
     }
 }
 

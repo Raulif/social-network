@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import {Button, UploaderDiv} from './reusables'
+import { Button, UploaderDiv } from '../../modules/reusables'
 
 export default class PictureUpload extends React.Component {
     constructor(props){
@@ -9,29 +9,35 @@ export default class PictureUpload extends React.Component {
     }
 
     inputHandler(e) {
+        //We store the selected file on local state until submit.
         this.setState({ pictureFile: e.target.files[0]})
     }
 
     submit() {
+
         var formData = new FormData();
         formData.append('file', this.state.pictureFile);
         axios.post('/uploadPicture', formData )
-        .then(({data}) => {
-            console.log('formData: ', formData);
 
-            if(data.success) {
-                console.log('data on picture-upload: ', data);
-                this.props.updateImage(data.picturename)
-            }
-        })
-        .catch(err => console.log("THERE WAS AN ERROR IN /newuser", err));
+            .then(({data}) => {
+                console.log('formData: ', formData);
+
+                if(data.success) {
+                    console.log('data on picture-upload: ', data);
+                    this.props.updateImage(data.picturename)
+                }
+            })
+
+            .catch(err => console.log("THERE WAS AN ERROR IN /newuser", err));
     }
 
-    render(props) {
+    render() {
 
         if(this.props.visible == false) {
             return null
-        } else {
+        }
+
+        else {
             return (
                 <div>
                     <UploaderDiv>
