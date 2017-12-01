@@ -21,7 +21,7 @@
 <p>![social-network-register](/Users/rauliglesias/Pictures/social network pics/social-network-register.gif)</p>
 <p>Once you are registered or logged in, you land on the profile page.</p>
 <p>The application will initially assign you an individual profile picture (courtesy of <a href="http://avatars.adorable.io" rel="nofollow">Adorable Avatars</a>). You can also <strong>upload your own profile picture</strong> clicking on the top small picture on the top of the screen.</p>
-<p><a href="/Raulif/social-network/blob/master/public/README-gifs/social-network-profile-pic.gif" target="_blank"><img src="/Raulif/social-network/raw/master/public/README-gifs/social-network-profile-pic.gif" alt="social-network-profile-pic" style="max-width:100%;"></a></p>
+<p><img src="https://github.com/Raulif/social-network/blob/master/public/README-gifs/social-network-profile-pic.gif" alt="social-network-profile-pic" style="max-width:100%;"></p>
 <p>On your profile page you can enter your <em>bohemian thought of the day</em> . This thought can be modified at any time.</p>
 <p><a href="/Raulif/social-network/blob/master/public/README-gifs/social-network-bio.gif" target="_blank"><img src="/Raulif/social-network/raw/master/public/README-gifs/social-network-bio.gif" alt="social-network-bio" style="max-width:100%;"></a></p>
 <p>On the bottom of the screen is the <strong>Friendship</strong> area. Two collapsable menus on the bottom of the screen display the friendship requests you have not accepted yet as well as your current friends. The requests that you accept will automatically be moved to the friends area.</p>
