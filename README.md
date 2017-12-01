@@ -34,9 +34,10 @@
 <p><strong>All Users</strong>: Here you can see all users, their names and pictures, who have registered in the application. The button underneath each picture shows you the current state of your friendship with this user.</p>
 <p><img src="https://github.com/Raulif/social-network/blob/master/public/README-gifs/social-network-all-users.gif" alt="social-network-profile-pic" style="max-width:100%;"></p>
 <h3>Contact
-email: <a href="mailto:raul4cade@gmail.com">raul4cade@gmail.com</a>
-Twitter: <a href="https://twitter.com/raulif">@raulif</a>
-LinkedIn: <a href="https://www.linkedin.com/in/raul-iglesias-fourcade/">Raul Iglesias</a></h3>
+<p>email: <a href="mailto:raul4cade@gmail.com">raul4cade@gmail.com</a></p>
+<p>Twitter: <a href="https://twitter.com/raulif">@raulif</a></p>
+<p>LinkedIn: <a href="https://www.linkedin.com/in/raul-iglesias-fourcade/">Raul Iglesias</a></p>
+</h3>
 </article>
   </div>
 
