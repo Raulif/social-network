@@ -20,7 +20,7 @@ export default class Register extends React.Component {
 
     submit() {
 
-        if(!this.firstname || !this.lastname || this.email || this.password) {
+        if(!this.firstname || !this.lastname || !this.email || !this.password) {
             /*If the user leaves any field empty, 'error: true' will cause an
             error message to display*/
             this.setState({error: true})

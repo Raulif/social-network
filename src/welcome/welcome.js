@@ -13,8 +13,8 @@ export default class Welcome extends React.Component {
                     <Logo />
                     <h1>The social network for Bohemians</h1>
                     <h2>Join
-                        <span className="boheme-keyword">Bohême</span>
-                        now!
+                        <span className="boheme-keyword"> Bohême </span>
+                         now!
                     </h2>
                 </div>
                 <div>

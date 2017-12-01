@@ -23,7 +23,7 @@ const uidSafe = require('uid-safe')
 
 const diskStorage = multer.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, __dirname + '../uploads');
+        callback(null, __dirname + '/uploads');
     },
     filename: function (req, file, callback) {
       uidSafe(24).then(function(uid) {
@@ -130,7 +130,7 @@ app.post('/end-friendship/:id', (req, res) => {
 
 
 app.get('/get-user/:id', (req, res) => {
-    const otherUserId = [req.params.id];
+    const otherUserId = req.params.id;
 
     db.getUser(otherUserId)
 
@@ -637,13 +637,13 @@ io.on('connection', (socket) => {
 
         arrayOfOnlineUsers.splice(userIndexInArray, 1);
 
-        var anotherConnection = () => {
+        var anotherConnection = (disconnectedSocket) => {
             return arrayOfOnlineUsers.find((user) =>{
                 return user.userId == disconnectedSocket.userId;
             })
         }
 
-        if(!anotherConnection()) {
+        if(!anotherConnection(disconnectedSocket)) {
             io.sockets.emit('userLeft', { id: disconnectedSocket.userId });
         }
     })
