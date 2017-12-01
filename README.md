@@ -23,7 +23,7 @@
 <p>The application will initially assign you an individual profile picture (courtesy of <a href="http://avatars.adorable.io" rel="nofollow">Adorable Avatars</a>). You can also <strong>upload your own profile picture</strong> clicking on the top small picture on the top of the screen.</p>
 <p><img src="https://github.com/Raulif/social-network/blob/master/public/README-gifs/social-network-profile-pic.gif" alt="social-network-profile-pic" style="max-width:100%;"></p>
 <p>On your profile page you can enter your <em>bohemian thought of the day</em> . This thought can be modified at any time.</p>
-<p><img src="https://github.com/Raulif/social-network/blob/master/public/README-gifs/social-network-bio.gif" alt="social-network-profile-pic" style="max-width:100%;"></p>
+<p><img src="https://github.com/Raulif/social-network/blob/master/public/README-gifs/social-network-thought.gif" alt="social-network-profile-pic" style="max-width:100%;"></p>
 <p>On the bottom of the screen is the <strong>Friendship</strong> area. Two collapsable menus on the bottom of the screen display the friendship requests you have not accepted yet as well as your current friends. The requests that you accept will automatically be moved to the friends area.</p>
 <p><img src="https://github.com/Raulif/social-network/blob/master/public/README-gifs/social-network-friends.gif" alt="social-network-profile-pic" style="max-width:100%;"></p>
 <p>When you click on the hamburger menu of the top bar a navigation bar is displayed, through which you can access different parts of the application:</p>
